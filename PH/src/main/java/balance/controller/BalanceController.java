@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -31,5 +32,12 @@ public class BalanceController {
         BigDecimal balance = balanceService.calculateBalance(startDate, endDate);
         return ResponseEntity.ok(balance);
     }
-}
 
+    // Método que maneja las Solicitudes GET para obtener todas la lista de transacciones.
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        List<Transaction> transactions = balanceService.getAllTransactions();
+        return ResponseEntity.ok(transactions);
+    }
+
+}
