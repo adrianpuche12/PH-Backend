@@ -1,5 +1,6 @@
 package balance.service;
 
+import balance.dto.AllOperationsDTO;
 import balance.model.*;
 import balance.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,6 +23,47 @@ public class FormsService {
     
     @Autowired
     private SalaryPaymentRepository salaryPaymentRepository;
+
+    /**
+     * Obtiene todas las operaciones del sistema, incluyendo depósitos de cierres,
+     * pagos a proveedores y pagos de salarios.
+     *
+     * @return Lista de todas las operaciones convertidas a DTO
+     */
+    public List<AllOperationsDTO> getAllOperations() {
+        List<AllOperationsDTO> allOperations = new ArrayList<>();
+
+        // Agregar depósitos de cierres
+        allOperations.addAll(
+            closingDepositRepository.findAll().stream()
+                .map(AllOperationsDTO::fromClosingDeposit)
+                .collect(Collectors.toList())
+        );
+
+        // Agregar pagos a proveedores
+        allOperations.addAll(
+            supplierPaymentRepository.findAll().stream()
+                .map(AllOperationsDTO::fromSupplierPayment)
+                .collect(Collectors.toList())
+        );
+
+        // Agregar pagos de salarios
+        allOperations.addAll(
+            salaryPaymentRepository.findAll().stream()
+                .map(AllOperationsDTO::fromSalaryPayment)
+                .collect(Collectors.toList())
+        );
+
+        // Ordenar por fecha descendente (más reciente primero)
+        allOperations.sort((t1, t2) -> {
+            if (t1.getDate() == null) return 1;
+            if (t2.getDate() == null) return -1;
+            return t2.getDate().compareTo(t1.getDate());
+        });
+
+        return allOperations;
+    }
+
 
     /**
      * Guarda un nuevo depósito de cierre
