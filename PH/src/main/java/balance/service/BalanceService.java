@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BalanceService {
@@ -15,6 +16,7 @@ public class BalanceService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    // Método para guardar una transacción (crear o actualizar)
     public Transaction saveTransaction(Transaction transaction) {
         return transactionRepository.save(transaction);
     }
@@ -24,6 +26,7 @@ public class BalanceService {
         return transactionRepository.findAll();
     }
 
+    // Método para calcular el balance entre dos fechas
     public BigDecimal calculateBalance(LocalDate startDate, LocalDate endDate) {
         List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
@@ -39,5 +42,19 @@ public class BalanceService {
 
         return income.subtract(expense);
     }
-}
 
+    // Método para obtener una transacción por ID
+    public Optional<Transaction> getTransactionById(Long id) {
+        return transactionRepository.findById(id);
+    }
+
+    // Método para eliminar una transacción por ID
+    public boolean deleteTransaction(Long id) {
+        Optional<Transaction> transaction = transactionRepository.findById(id);
+        if (transaction.isPresent()) {
+            transactionRepository.delete(transaction.get());
+            return true;
+        }
+        return false;
+    }
+}
