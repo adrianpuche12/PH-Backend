@@ -28,20 +28,30 @@ public class BalanceService {
 
     // Método para calcular el balance entre dos fechas
     public BigDecimal calculateBalance(LocalDate startDate, LocalDate endDate) {
+        // Obtener las transacciones dentro del rango de fechas
         List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
+        // Si no hay transacciones, retornar cero
+        if (transactions == null || transactions.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        // Calcular el ingreso total (income)
         BigDecimal income = transactions.stream()
                 .filter(t -> "income".equalsIgnoreCase(t.getType()))
-                .map(Transaction::getAmount)
+                .map(t -> new BigDecimal(t.getAmount().toString())) // Asegurarse de que Amount sea BigDecimal
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Calcular el gasto total (expense)
         BigDecimal expense = transactions.stream()
                 .filter(t -> "expense".equalsIgnoreCase(t.getType()))
-                .map(Transaction::getAmount)
+                .map(t -> new BigDecimal(t.getAmount().toString())) // Asegurarse de que Amount sea BigDecimal
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Retornar el balance: ingreso - gasto
         return income.subtract(expense);
     }
+
 
     // Método para obtener una transacción por ID
     public Optional<Transaction> getTransactionById(Long id) {
