@@ -64,6 +64,37 @@ public class FormsService {
         return allOperations;
     }
 
+    /**
+     * Obtiene todas las operaciones filtradas por rango de fechas.
+     *
+     * @param startDate fecha inicial del rango
+     * @param endDate fecha final del rango
+     * @return Lista de operaciones dentro del rango especificado
+     */
+    public List<AllOperationsDTO> getOperationsByDateRange(LocalDate startDate, LocalDate endDate) {
+        List<AllOperationsDTO> allOperations = new ArrayList<>();
+
+        // Obtener y filtrar depósitos de cierres
+        closingDepositRepository.findByDepositDateBetween(startDate, endDate)
+            .stream()
+            .map(AllOperationsDTO::fromClosingDeposit)
+            .forEach(allOperations::add);
+
+        // Obtener y filtrar pagos a proveedores
+        supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate)
+            .stream()
+            .map(AllOperationsDTO::fromSupplierPayment)
+            .forEach(allOperations::add);
+
+        // Ordenar por fecha descendente
+        allOperations.sort((o1, o2) -> {
+            if (o1.getDate() == null) return 1;
+            if (o2.getDate() == null) return -1;
+            return o2.getDate().compareTo(o1.getDate());
+        });
+
+        return allOperations;
+    }
 
     /**
      * Guarda un nuevo depósito de cierre
@@ -86,6 +117,15 @@ public class FormsService {
     }
 
     /**
+     * Obtiene todos los depósitos de cierre registrados.
+     *
+     * @return lista de todos los depósitos de cierre
+     */
+    public List<ClosingDeposit> getAllClosingDeposits() {
+        return closingDepositRepository.findAll();
+    }
+
+    /**
      * Guarda un nuevo pago a proveedor
      * @param payment el pago a guardar
      * @return el pago guardado con su ID asignado
@@ -103,6 +143,15 @@ public class FormsService {
      */
     public List<SupplierPayment> getSupplierPayments(LocalDate startDate, LocalDate endDate) {
         return supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate);
+    }
+
+    /**
+     * Obtiene todos los pagos a proveedores registrados.
+     *
+     * @return lista de todos los pagos a proveedores
+     */
+    public List<SupplierPayment> getAllSupplierPayments() {
+        return supplierPaymentRepository.findAll();
     }
 
     /**

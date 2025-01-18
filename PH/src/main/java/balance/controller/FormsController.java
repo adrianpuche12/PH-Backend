@@ -43,6 +43,16 @@ public class FormsController {
     }
 
     /**
+     * Obtiene todos los depósitos de cierre.
+     * 
+     * @return ResponseEntity con la lista de todos los depósitos
+     */
+    @GetMapping("/closing-deposits/all")
+    public ResponseEntity<List<ClosingDeposit>> getAllClosingDeposits() {
+        return ResponseEntity.ok(formsService.getAllClosingDeposits());
+    }
+
+    /**
      * Obtiene todos los depósitos de cierre en un rango de fechas.
      * 
      * @param startDate Fecha inicial del rango (formato: YYYY-MM-DD)
@@ -73,6 +83,16 @@ public class FormsController {
     public ResponseEntity<SupplierPayment> addSupplierPayment(
             @Valid @RequestBody SupplierPayment payment) {
         return ResponseEntity.ok(formsService.saveSupplierPayment(payment));
+    }
+
+    /**
+     * Obtiene todos los pagos a proveedores.
+     * 
+     * @return ResponseEntity con la lista de todos los pagos a proveedores
+     */
+    @GetMapping("/supplier-payments/all")
+    public ResponseEntity<List<SupplierPayment>> getAllSupplierPayments() {
+        return ResponseEntity.ok(formsService.getAllSupplierPayments());
     }
 
     /**
