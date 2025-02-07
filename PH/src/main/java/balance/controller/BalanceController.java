@@ -54,6 +54,9 @@ public class BalanceController {
     public ResponseEntity<BigDecimal> getBalance(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
+        System.out.println("Start Date received: " + startDate);
+        System.out.println("End Date received: " + endDate);
+
         BigDecimal balance = balanceService.calculateBalance(startDate, endDate);
         return ResponseEntity.ok(balance);
     }
