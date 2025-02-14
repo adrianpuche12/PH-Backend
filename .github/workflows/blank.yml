@@ -33,12 +33,12 @@ jobs:
           echo "✅ Imagen con versión: $IMAGE_VERSION"
 
       - name: Verify directory contents
-        run: ls -l ./PH-Backend/PH
+        run: ls -l ./PH
 
       - name: Build Docker image and load locally
         run: |
           echo "🚀 Construyendo la imagen Docker..."
-          docker buildx build --platform linux/amd64 --load -t $IMAGE_VERSION ./PH-Backend/PH
+          docker buildx build --platform linux/amd64 --load -t $IMAGE_VERSION ./PH
           echo "✅ Imagen construida y cargada en Docker local."
 
       - name: List Docker images (debugging)
