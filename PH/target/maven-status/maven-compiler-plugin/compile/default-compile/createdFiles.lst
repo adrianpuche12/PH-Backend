@@ -1,0 +1,16 @@
+balance\dto\AllOperationsDTO.class
+balance\model\Transaction.class
+balance\repository\SalaryPaymentRepository.class
+balance\service\BalanceService.class
+package-info.class
+balance\controller\OperationsController.class
+balance\repository\SupplierPaymentRepository.class
+balance\controller\FormsController.class
+balance\model\ClosingDeposit.class
+balance\model\SalaryPayment.class
+balance\repository\TransactionRepository.class
+balance\model\SupplierPayment.class
+balance\controller\BalanceController.class
+balance\repository\ClosingDepositRepository.class
+balance\BalanceApplication.class
+balance\service\FormsService.class
