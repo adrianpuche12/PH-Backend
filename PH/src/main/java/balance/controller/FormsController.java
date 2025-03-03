@@ -13,9 +13,10 @@ import java.util.List;
 /*
  Endpoints para la gestión de depósitos de cierres, pagos a proveedores y salarios.
  */
-@CrossOrigin(origins = "*")
+
 @RestController
 @RequestMapping("/api/forms")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class FormsController {
     
     @Autowired

@@ -13,9 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
+
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class BalanceController {
 
     @Autowired
