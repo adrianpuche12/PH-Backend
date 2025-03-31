@@ -53,6 +53,7 @@ public class AllOperationsDTO {
         dto.setId(payment.getId());
         dto.setType("SALARY");
         dto.setAmount(payment.getAmount());
+        dto.setDate(payment.getDepositDate());
         dto.setDescription(payment.getDescription());
         dto.setUsername(payment.getUsername());
         return dto;

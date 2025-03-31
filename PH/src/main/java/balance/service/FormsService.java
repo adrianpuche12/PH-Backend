@@ -75,6 +75,11 @@ public class FormsService {
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
+        salaryPaymentRepository.findByDepositDateBetween(startDate, endDate)
+                .stream()
+                .map(AllOperationsDTO::fromSalaryPayment)
+                .forEach(allOperations::add);
+
         allOperations.sort((o1, o2) -> {
             if (o1.getDate() == null) return 1;
             if (o2.getDate() == null) return -1;
@@ -112,6 +117,7 @@ public class FormsService {
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
+        payment.setDepositDate(LocalDate.now());
         return salaryPaymentRepository.save(payment);
     }
 
@@ -148,6 +154,9 @@ public class FormsService {
         existingPayment.setAmount(updatedPayment.getAmount());
         existingPayment.setDescription(updatedPayment.getDescription());
         existingPayment.setUsername(updatedPayment.getUsername());
+        if (updatedPayment.getDepositDate() != null) {
+            existingPayment.setDepositDate(updatedPayment.getDepositDate());
+        }
         return salaryPaymentRepository.save(existingPayment);
     }
 
