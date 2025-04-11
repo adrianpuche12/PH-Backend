@@ -88,6 +88,9 @@ public class OperationsController {
                 salaryPayment.setAmount(dto.getAmount());
                 salaryPayment.setDescription(dto.getDescription());
                 salaryPayment.setUsername(dto.getUsername());
+                if (dto.getDate() != null) {
+                    salaryPayment.setDepositDate(dto.getDate());
+                }
                 SalaryPayment updatedSalaryPayment = formsService.updateSalaryPayment(id, salaryPayment);
                 return ResponseEntity.ok(AllOperationsDTO.fromSalaryPayment(updatedSalaryPayment));
             default:

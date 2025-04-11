@@ -3,6 +3,7 @@ package balance.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "salary_payments")
@@ -24,6 +25,16 @@ public class SalaryPayment {
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Column(nullable = false)
     private String username;
+    
+    @Column(nullable = false)
+    private LocalDate depositDate;
+    
+    @PrePersist
+    public void prePersist() {
+        if (depositDate == null) {
+            depositDate = LocalDate.now();
+        }
+    }
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -41,4 +52,8 @@ public class SalaryPayment {
     public String getUsername() { return username; }
 
     public void setUsername(String username) { this.username = username; }
+    
+    public LocalDate getDepositDate() { return depositDate; }
+    
+    public void setDepositDate(LocalDate depositDate) { this.depositDate = depositDate; }
 }
