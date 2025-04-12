@@ -26,6 +26,10 @@ public class SupplierPayment {
     @Column(nullable = false)
     private String username;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
 
     @PrePersist
     public void prePersist() {
@@ -35,23 +39,52 @@ public class SupplierPayment {
     }
 
     // Getters y Setters
-    public Long getId() { return id; }
 
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getSupplier() { return supplier; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setSupplier(String supplier) { this.supplier = supplier; }
+    public String getSupplier() {
+        return supplier;
+    }
 
-    public BigDecimal getAmount() { return amount; }
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
 
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-    public LocalDate getPaymentDate() { return paymentDate; }
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-    public void setPaymentDate(LocalDate paymentDate) { this.paymentDate = paymentDate; }
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
 
-    public String getUsername() { return username; }
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 
-    public void setUsername(String username) { this.username = username; }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
 }

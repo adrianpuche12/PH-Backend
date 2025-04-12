@@ -103,6 +103,8 @@ public class FormsService {
         return closingDepositRepository.findAll();
     }
 
+
+
     public SupplierPayment saveSupplierPayment(SupplierPayment payment) {
         payment.setPaymentDate(LocalDate.now());
         return supplierPaymentRepository.save(payment);
@@ -124,6 +126,15 @@ public class FormsService {
     public List<SalaryPayment> getAllSalaryPayments() {
         return salaryPaymentRepository.findAll();
     }
+
+    //Metodos de filtros por local
+
+    // 🔍 Filtro por store ID
+    public List<ClosingDeposit> findByStoreId(Long storeId) {
+        return closingDepositRepository.findByStoreId(storeId);
+    }
+
+
 
     // Métodos de actualización (PUT)
     public ClosingDeposit updateClosingDeposit(Long id, ClosingDeposit updatedDeposit) {

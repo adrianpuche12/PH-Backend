@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface SupplierPaymentRepository extends JpaRepository<SupplierPayment, Long> {
     List<SupplierPayment> findByPaymentDateBetween(LocalDate startDate, LocalDate endDate);
+
+    List<SupplierPayment> findByStoreId(Long storeId); // 🔍 Para filtrar por local
 }

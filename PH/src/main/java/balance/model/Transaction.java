@@ -32,7 +32,12 @@ public class Transaction {
     @Size(max = 255, message = "La descripción no puede tener más de 255 caracteres")
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
     // Getters y Setters
+
     public Long getId() {
         return id;
     }
@@ -71,5 +76,13 @@ public class Transaction {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }

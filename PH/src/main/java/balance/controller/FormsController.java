@@ -66,6 +66,12 @@ public class FormsController {
         return ResponseEntity.ok(formsService.getClosingDeposits(startDate, endDate));
     }
 
+    // 🆕 Endpoint para filtrar por store ID
+    @GetMapping("/closing-deposits/store/{storeId}")
+    public ResponseEntity<List<ClosingDeposit>> getByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(formsService.findByStoreId(storeId));
+    }
+
     /**
      * Registra un nuevo pago a proveedor.
      * 
@@ -137,5 +143,7 @@ public class FormsController {
     public ResponseEntity<List<SalaryPayment>> getAllSalaryPayments() {
         return ResponseEntity.ok(formsService.getAllSalaryPayments());
     }
+
+
     
 }
