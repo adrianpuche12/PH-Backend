@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface SalaryPaymentRepository extends JpaRepository<SalaryPayment, Long> {
     List<SalaryPayment> findByDepositDateBetween(LocalDate startDate, LocalDate endDate);
-
+    List<SalaryPayment> findByDepositDateBetweenAndStoreId(LocalDate startDate, LocalDate endDate, Long storeId);
     List<SalaryPayment> findByStoreId(Long storeId);  // 🔍 Búsqueda por local
 }

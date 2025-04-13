@@ -11,4 +11,5 @@ import java.util.List;
 public interface ClosingDepositRepository extends JpaRepository<ClosingDeposit, Long> {
     List<ClosingDeposit> findByDepositDateBetween(LocalDate startDate, LocalDate endDate);
     List<ClosingDeposit> findByStoreId(Long storeId);  // <<-- Filtro por ID de store
+    List<ClosingDeposit> findByDepositDateBetweenAndStoreId(LocalDate startDate, LocalDate endDate, Long storeId);
 }
