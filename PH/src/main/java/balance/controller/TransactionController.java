@@ -50,6 +50,8 @@ public class TransactionController {
 //        return ResponseEntity.noContent().build();
 //    }
 
+    //PRUEBA ACTUALIZACION SERVIDOR
+
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<Transaction>> getByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(transactionService.findByStoreId(storeId));
