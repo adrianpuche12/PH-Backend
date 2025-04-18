@@ -57,7 +57,8 @@ public class FormsController {
      * 
      * @param startDate Fecha inicial del rango (formato: YYYY-MM-DD)
      * @param endDate Fecha final del rango (formato: YYYY-MM-DD)
-     * @return ResponseEntity con la lista de depósitos encontrados
+     * @return ResponseEntity
+     * con la lista de depósitos encontrados
      */
     @GetMapping("/closing-deposits")
     public ResponseEntity<List<ClosingDeposit>> getClosingDeposits(
