@@ -52,9 +52,6 @@ public class FormsController {
     public ResponseEntity<List<ClosingDeposit>> getAllClosingDeposits() {
         return ResponseEntity.ok(formsService.getAllClosingDeposits());
     }
-
-
-
     /**
      * Obtiene todos los depósitos de cierre en un rango de fechas.
      * 
