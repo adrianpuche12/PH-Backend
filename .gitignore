@@ -11,7 +11,6 @@ target/
 
 # Compiled files
 *.class
-*.jar
 *.war
 
 # Logs
