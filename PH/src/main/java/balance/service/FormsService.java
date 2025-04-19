@@ -106,7 +106,9 @@ public class FormsService {
 
 
     public SupplierPayment saveSupplierPayment(SupplierPayment payment) {
-        payment.setPaymentDate(LocalDate.now());
+        if (payment.getPaymentDate() == null) {
+            payment.setPaymentDate(LocalDate.now());
+        }
         return supplierPaymentRepository.save(payment);
     }
 
@@ -119,7 +121,9 @@ public class FormsService {
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
-        payment.setDepositDate(LocalDate.now());
+        if (payment.getDepositDate() == null) {
+            payment.setDepositDate(LocalDate.now());
+        }
         return salaryPaymentRepository.save(payment);
     }
 
@@ -153,7 +157,7 @@ public class FormsService {
         SupplierPayment existingPayment = supplierPaymentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "SupplierPayment no encontrado con id " + id));
         existingPayment.setAmount(updatedPayment.getAmount());
-        //SexistingPayment.setDescription(updatedPayment.getDescription());
+        //existingPayment.setDescription(updatedPayment.getDescription());
         existingPayment.setUsername(updatedPayment.getUsername());
         existingPayment.setSupplier(updatedPayment.getSupplier());
         return supplierPaymentRepository.save(existingPayment);
