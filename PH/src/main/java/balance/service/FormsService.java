@@ -89,6 +89,62 @@ public class FormsService {
         return allOperations;
     }
 
+    // Método para filtrar por store
+    public List<AllOperationsDTO> getOperationsByStore(Long storeId) {
+        List<AllOperationsDTO> allOperations = new ArrayList<>();
+
+        closingDepositRepository.findByStoreId(storeId)
+                .stream()
+                .map(AllOperationsDTO::fromClosingDeposit)
+                .forEach(allOperations::add);
+
+        supplierPaymentRepository.findByStoreId(storeId)
+                .stream()
+                .map(AllOperationsDTO::fromSupplierPayment)
+                .forEach(allOperations::add);
+
+        salaryPaymentRepository.findByStoreId(storeId)
+                .stream()
+                .map(AllOperationsDTO::fromSalaryPayment)
+                .forEach(allOperations::add);
+
+        allOperations.sort((o1, o2) -> {
+            if (o1.getDate() == null) return 1;
+            if (o2.getDate() == null) return -1;
+            return o2.getDate().compareTo(o1.getDate());
+        });
+
+        return allOperations;
+    }
+
+    // Método para filtrar por fecha y store
+    public List<AllOperationsDTO> getOperationsByDateRangeAndStore(LocalDate startDate, LocalDate endDate, Long storeId) {
+        List<AllOperationsDTO> allOperations = new ArrayList<>();
+
+        closingDepositRepository.findByDepositDateBetweenAndStoreId(startDate, endDate, storeId)
+                .stream()
+                .map(AllOperationsDTO::fromClosingDeposit)
+                .forEach(allOperations::add);
+
+        supplierPaymentRepository.findByPaymentDateBetweenAndStoreId(startDate, endDate, storeId)
+                .stream()
+                .map(AllOperationsDTO::fromSupplierPayment)
+                .forEach(allOperations::add);
+
+        salaryPaymentRepository.findByDepositDateBetweenAndStoreId(startDate, endDate, storeId)
+                .stream()
+                .map(AllOperationsDTO::fromSalaryPayment)
+                .forEach(allOperations::add);
+
+        allOperations.sort((o1, o2) -> {
+            if (o1.getDate() == null) return 1;
+            if (o2.getDate() == null) return -1;
+            return o2.getDate().compareTo(o1.getDate());
+        });
+
+        return allOperations;
+    }
+
     // Métodos para guardar operaciones
     public ClosingDeposit saveClosingDeposit(ClosingDeposit deposit) {
         deposit.setDepositDate(LocalDate.now());
@@ -145,11 +201,14 @@ public class FormsService {
         ClosingDeposit existingDeposit = closingDepositRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ClosingDeposit no encontrado con id " + id));
         existingDeposit.setAmount(updatedDeposit.getAmount());
-        // No se actualiza description ya que el modelo no lo tiene.
         existingDeposit.setUsername(updatedDeposit.getUsername());
         existingDeposit.setClosingsCount(updatedDeposit.getClosingsCount());
         existingDeposit.setPeriodStart(updatedDeposit.getPeriodStart());
         existingDeposit.setPeriodEnd(updatedDeposit.getPeriodEnd());
+        if (updatedDeposit.getStore() != null) {
+            existingDeposit.setStore(updatedDeposit.getStore());
+        }
+
         return closingDepositRepository.save(existingDeposit);
     }
 
@@ -157,9 +216,13 @@ public class FormsService {
         SupplierPayment existingPayment = supplierPaymentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "SupplierPayment no encontrado con id " + id));
         existingPayment.setAmount(updatedPayment.getAmount());
-        //existingPayment.setDescription(updatedPayment.getDescription());
+        //SexistingPayment.setDescription(updatedPayment.getDescription());
         existingPayment.setUsername(updatedPayment.getUsername());
         existingPayment.setSupplier(updatedPayment.getSupplier());
+        if (updatedPayment.getStore() != null) {
+            existingPayment.setStore(updatedPayment.getStore());
+        }
+
         return supplierPaymentRepository.save(existingPayment);
     }
 
@@ -172,6 +235,10 @@ public class FormsService {
         if (updatedPayment.getDepositDate() != null) {
             existingPayment.setDepositDate(updatedPayment.getDepositDate());
         }
+        if (updatedPayment.getStore() != null) {
+            existingPayment.setStore(updatedPayment.getStore());
+        }
+
         return salaryPaymentRepository.save(existingPayment);
     }
 

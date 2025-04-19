@@ -35,10 +35,21 @@ jobs:
       - name: Verify directory contents
         run: ls -l ./PH
 
+      - name: Set up Java & Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build JAR with Maven
+        run: |
+          cd PH
+          ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+
       - name: Build Docker image and load locally
         run: |
-          echo "🚀 Construyendo la imagen Docker..."
-          docker buildx build --platform linux/amd64 --load -t $IMAGE_VERSION ./PH
+          echo "🚀 Construyendo la imagen Docker sin caché..."
+          docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
           echo "✅ Imagen construida y cargada en Docker local."
 
       - name: List Docker images (debugging)

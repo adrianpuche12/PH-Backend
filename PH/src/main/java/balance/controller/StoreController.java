@@ -13,6 +13,8 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class StoreController {
 
+     //PRUEBA ACTUALIZACION SERVIDOR
+
     @Autowired
     private StoreService storeService;
 

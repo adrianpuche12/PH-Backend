@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -49,8 +50,19 @@ public class TransactionController {
 //        return ResponseEntity.noContent().build();
 //    }
 
+    //PRUEBA ACTUALIZACION SERVIDOR
+    //OTRO COMENTARIO
+
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<Transaction>> getByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(transactionService.findByStoreId(storeId));
+    }
+
+    @GetMapping("/date-range-store")
+    public ResponseEntity<List<Transaction>> getByDateRangeAndStore(
+        @RequestParam LocalDate startDate,
+        @RequestParam LocalDate endDate,
+        @RequestParam Long storeId) {
+        return ResponseEntity.ok(transactionService.findByDateBetweenAndStoreId(startDate, endDate, storeId));
     }
 }

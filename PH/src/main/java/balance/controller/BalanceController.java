@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin(origins = "*")
 public class BalanceController {
 
     @Autowired
@@ -80,6 +81,9 @@ public class BalanceController {
             updatedTransaction.setAmount(transaction.getAmount());
             updatedTransaction.setDate(transaction.getDate());
             updatedTransaction.setDescription(transaction.getDescription());
+            if (transaction.getStore() != null) {
+                updatedTransaction.setStore(transaction.getStore());
+            }
 
             // Guardar la transacción actualizada
             Transaction savedTransaction = balanceService.saveTransaction(updatedTransaction);

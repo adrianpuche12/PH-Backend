@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/forms")
+@CrossOrigin(origins = "*")
 public class FormsController {
     
     @Autowired
@@ -51,13 +52,13 @@ public class FormsController {
     public ResponseEntity<List<ClosingDeposit>> getAllClosingDeposits() {
         return ResponseEntity.ok(formsService.getAllClosingDeposits());
     }
-
     /**
      * Obtiene todos los depósitos de cierre en un rango de fechas.
      * 
      * @param startDate Fecha inicial del rango (formato: YYYY-MM-DD)
      * @param endDate Fecha final del rango (formato: YYYY-MM-DD)
-     * @return ResponseEntity con la lista de depósitos encontrados
+     * @return ResponseEntity
+     * con la lista de depósitos encontrados
      */
     @GetMapping("/closing-deposits")
     public ResponseEntity<List<ClosingDeposit>> getClosingDeposits(
