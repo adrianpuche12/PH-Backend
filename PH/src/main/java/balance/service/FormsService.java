@@ -75,7 +75,7 @@ public class FormsService {
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findByDepositDateBetween(startDate, endDate)
+        salaryPaymentRepository.findBySalaryDateBetween(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -131,7 +131,7 @@ public class FormsService {
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findByDepositDateBetweenAndStoreId(startDate, endDate, storeId)
+        salaryPaymentRepository.findBySalaryDateBetweenAndStoreId(startDate, endDate, storeId)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -177,8 +177,8 @@ public class FormsService {
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
-        if (payment.getDepositDate() == null) {
-            payment.setDepositDate(LocalDate.now());
+        if (payment.getSalaryDate() == null) {
+            payment.setSalaryDate(LocalDate.now());
         }
         return salaryPaymentRepository.save(payment);
     }
@@ -232,8 +232,8 @@ public class FormsService {
         existingPayment.setAmount(updatedPayment.getAmount());
         existingPayment.setDescription(updatedPayment.getDescription());
         existingPayment.setUsername(updatedPayment.getUsername());
-        if (updatedPayment.getDepositDate() != null) {
-            existingPayment.setDepositDate(updatedPayment.getDepositDate());
+        if (updatedPayment.getSalaryDate() != null) {
+            existingPayment.setSalaryDate(updatedPayment.getSalaryDate());
         }
         if (updatedPayment.getStore() != null) {
             existingPayment.setStore(updatedPayment.getStore());

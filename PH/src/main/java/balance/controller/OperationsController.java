@@ -126,7 +126,7 @@ public class OperationsController {
                 salaryPayment.setDescription(dto.getDescription());
                 salaryPayment.setUsername(dto.getUsername());
                 if (dto.getDate() != null) {
-                    salaryPayment.setDepositDate(dto.getDate());
+                    salaryPayment.setSalaryDate(dto.getDate());
                 }
                 if (dto.getStoreId() != null) {
                     Store store = new Store();

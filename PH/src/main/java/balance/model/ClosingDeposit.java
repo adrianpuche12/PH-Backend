@@ -20,6 +20,7 @@ public class ClosingDeposit {
     @Column(nullable = false)
     private BigDecimal amount;
     
+    @NotNull(message = "La fecha del cierre de deposito es obligatoria")
     @Column(nullable = false)
     private LocalDate depositDate;
     
@@ -40,12 +41,6 @@ public class ClosingDeposit {
     private Store store;
 
 
-    @PrePersist
-    public void prePersist() {
-        if (depositDate == null) {
-            depositDate = LocalDate.now();
-        }
-    }
 
     // Getters and setters
 
