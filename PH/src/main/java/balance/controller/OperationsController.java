@@ -90,6 +90,14 @@ public class OperationsController {
                 closingDeposit.setClosingsCount(dto.getClosingsCount());
                 closingDeposit.setPeriodStart(dto.getPeriodStart());
                 closingDeposit.setPeriodEnd(dto.getPeriodEnd());
+                if (dto.getDepositDate() != null) {
+                    closingDeposit.setDepositDate(dto.getDepositDate());
+                    System.out.println("Usando depositDate específico: " + dto.getDepositDate());
+                } else if (dto.getDate() != null) {
+                    closingDeposit.setDepositDate(dto.getDate());
+                    System.out.println("Usando date genérico: " + dto.getDate());
+                }
+                
                 if (dto.getStoreId() != null) {
                     Store store = new Store();
                     store.setId(dto.getStoreId());
@@ -108,6 +116,14 @@ public class OperationsController {
                 //SsupplierPayment.setDescription(dto.getDescription());
                 supplierPayment.setUsername(dto.getUsername());
                 supplierPayment.setSupplier(dto.getSupplier());
+                if (dto.getPaymentDate() != null) {
+                    supplierPayment.setPaymentDate(dto.getPaymentDate());
+                    System.out.println("Usando paymentDate específico: " + dto.getPaymentDate());
+                } else if (dto.getDate() != null) {
+                    supplierPayment.setPaymentDate(dto.getDate());
+                    System.out.println("Usando date genérico: " + dto.getDate());
+                }
+                
                 if (dto.getStoreId() != null) {
                     Store store = new Store();
                     store.setId(dto.getStoreId());
@@ -124,10 +140,13 @@ public class OperationsController {
                 SalaryPayment salaryPayment = new SalaryPayment();
                 salaryPayment.setAmount(dto.getAmount());
                 salaryPayment.setDescription(dto.getDescription());
-                salaryPayment.setUsername(dto.getUsername());
-                if (dto.getDate() != null) {
+                salaryPayment.setUsername(dto.getUsername());               
+                if (dto.getSalaryDate() != null) {
+                    salaryPayment.setSalaryDate(dto.getSalaryDate());
+                } else if (dto.getDate() != null) {
                     salaryPayment.setSalaryDate(dto.getDate());
                 }
+                
                 if (dto.getStoreId() != null) {
                     Store store = new Store();
                     store.setId(dto.getStoreId());

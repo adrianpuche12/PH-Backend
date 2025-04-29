@@ -10,6 +10,10 @@ public class AllOperationsDTO {
     private String type; // "CLOSING", "SUPPLIER", "SALARY"
     private BigDecimal amount;
     private LocalDate date;
+    private LocalDate depositDate;
+    private LocalDate paymentDate;
+    private LocalDate salaryDate;
+    
     private String description;
     private String username;
     private Long storeId;
@@ -30,6 +34,7 @@ public class AllOperationsDTO {
         dto.setType("CLOSING");
         dto.setAmount(deposit.getAmount());
         dto.setDate(deposit.getDepositDate());
+        dto.setDepositDate(deposit.getDepositDate());
         dto.setUsername(deposit.getUsername());
         if (deposit.getStore() != null) {
             dto.setStoreId(deposit.getStore().getId());
@@ -48,6 +53,7 @@ public class AllOperationsDTO {
         dto.setType("SUPPLIER");
         dto.setAmount(payment.getAmount());
         dto.setDate(payment.getPaymentDate());
+        dto.setPaymentDate(payment.getPaymentDate());
         dto.setUsername(payment.getUsername());
         if (payment.getStore() != null) {
             dto.setStoreId(payment.getStore().getId());
@@ -64,6 +70,7 @@ public class AllOperationsDTO {
         dto.setType("SALARY");
         dto.setAmount(payment.getAmount());
         dto.setDate(payment.getSalaryDate());
+        dto.setSalaryDate(payment.getSalaryDate());
         dto.setDescription(payment.getDescription());
         dto.setUsername(payment.getUsername());
         if (payment.getStore() != null) {
@@ -168,5 +175,29 @@ public class AllOperationsDTO {
 
     public void setSupplier(String supplier) {
         this.supplier = supplier;
+    }
+
+    public LocalDate getDepositDate() {
+        return depositDate;
+    }
+
+    public void setDepositDate(LocalDate depositDate) {
+        this.depositDate = depositDate;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public LocalDate getSalaryDate() {
+        return salaryDate;
+    }
+
+    public void setSalaryDate(LocalDate salaryDate) {
+        this.salaryDate = salaryDate;
     }
 }
