@@ -1,6 +1,6 @@
 # Maven
-#target/
-#**/target/
+target/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
 
 # IntelliJ IDEA
@@ -11,7 +11,7 @@
 
 # Compiled files
 *.class
-#*.jar
+*.jar
 *.war
 
 # Logs
