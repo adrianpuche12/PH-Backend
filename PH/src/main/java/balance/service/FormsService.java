@@ -75,7 +75,7 @@ public class FormsService {
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findByDepositDateBetween(startDate, endDate)
+        salaryPaymentRepository.findBySalaryDateBetween(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -131,7 +131,7 @@ public class FormsService {
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findByDepositDateBetweenAndStoreId(startDate, endDate, storeId)
+        salaryPaymentRepository.findBySalaryDateBetweenAndStoreId(startDate, endDate, storeId)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -147,7 +147,9 @@ public class FormsService {
 
     // Métodos para guardar operaciones
     public ClosingDeposit saveClosingDeposit(ClosingDeposit deposit) {
-        deposit.setDepositDate(LocalDate.now());
+        if (deposit.getDepositDate() == null) {
+            deposit.setDepositDate(LocalDate.now());
+        }
         return closingDepositRepository.save(deposit);
     }
 
@@ -162,7 +164,9 @@ public class FormsService {
 
 
     public SupplierPayment saveSupplierPayment(SupplierPayment payment) {
-        payment.setPaymentDate(LocalDate.now());
+        if (payment.getPaymentDate() == null) {
+            payment.setPaymentDate(LocalDate.now());
+        }
         return supplierPaymentRepository.save(payment);
     }
 
@@ -175,7 +179,9 @@ public class FormsService {
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
-        payment.setDepositDate(LocalDate.now());
+        if (payment.getSalaryDate() == null) {
+            payment.setSalaryDate(LocalDate.now());
+        }
         return salaryPaymentRepository.save(payment);
     }
 
@@ -198,14 +204,31 @@ public class FormsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ClosingDeposit no encontrado con id " + id));
         existingDeposit.setAmount(updatedDeposit.getAmount());
         existingDeposit.setUsername(updatedDeposit.getUsername());
-        existingDeposit.setClosingsCount(updatedDeposit.getClosingsCount());
-        existingDeposit.setPeriodStart(updatedDeposit.getPeriodStart());
-        existingDeposit.setPeriodEnd(updatedDeposit.getPeriodEnd());
+        
+        if (updatedDeposit.getClosingsCount() != null) {
+            existingDeposit.setClosingsCount(updatedDeposit.getClosingsCount());
+        }
+        
+        if (updatedDeposit.getPeriodStart() != null) {
+            existingDeposit.setPeriodStart(updatedDeposit.getPeriodStart());
+        }
+        
+        if (updatedDeposit.getPeriodEnd() != null) {
+            existingDeposit.setPeriodEnd(updatedDeposit.getPeriodEnd());
+        }
+        
+        if (updatedDeposit.getDepositDate() != null) {
+            System.out.println("Actualizando depositDate a: " + updatedDeposit.getDepositDate());
+            existingDeposit.setDepositDate(updatedDeposit.getDepositDate());
+        }
+        
         if (updatedDeposit.getStore() != null) {
             existingDeposit.setStore(updatedDeposit.getStore());
         }
         
-        return closingDepositRepository.save(existingDeposit);
+        ClosingDeposit saved = closingDepositRepository.save(existingDeposit);
+        System.out.println("ClosingDeposit guardado con depositDate: " + saved.getDepositDate());
+        return saved;
     }
 
     public SupplierPayment updateSupplierPayment(Long id, SupplierPayment updatedPayment) {
@@ -214,28 +237,48 @@ public class FormsService {
         existingPayment.setAmount(updatedPayment.getAmount());
         //SexistingPayment.setDescription(updatedPayment.getDescription());
         existingPayment.setUsername(updatedPayment.getUsername());
-        existingPayment.setSupplier(updatedPayment.getSupplier());
+        
+        if (updatedPayment.getSupplier() != null) {
+            existingPayment.setSupplier(updatedPayment.getSupplier());
+        }
+        
+        if (updatedPayment.getPaymentDate() != null) {
+            System.out.println("Actualizando paymentDate a: " + updatedPayment.getPaymentDate());
+            existingPayment.setPaymentDate(updatedPayment.getPaymentDate());
+        }
+        
         if (updatedPayment.getStore() != null) {
             existingPayment.setStore(updatedPayment.getStore());
         }
         
-        return supplierPaymentRepository.save(existingPayment);
+        SupplierPayment saved = supplierPaymentRepository.save(existingPayment);
+        System.out.println("SupplierPayment guardado con paymentDate: " + saved.getPaymentDate());
+        return saved;
     }
 
     public SalaryPayment updateSalaryPayment(Long id, SalaryPayment updatedPayment) {
         SalaryPayment existingPayment = salaryPaymentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "SalaryPayment no encontrado con id " + id));
         existingPayment.setAmount(updatedPayment.getAmount());
-        existingPayment.setDescription(updatedPayment.getDescription());
-        existingPayment.setUsername(updatedPayment.getUsername());
-        if (updatedPayment.getDepositDate() != null) {
-            existingPayment.setDepositDate(updatedPayment.getDepositDate());
+        
+        if (updatedPayment.getDescription() != null) {
+            existingPayment.setDescription(updatedPayment.getDescription());
         }
+        
+        existingPayment.setUsername(updatedPayment.getUsername());
+        
+        if (updatedPayment.getSalaryDate() != null) {
+            System.out.println("Actualizando salaryDate a: " + updatedPayment.getSalaryDate());
+            existingPayment.setSalaryDate(updatedPayment.getSalaryDate());
+        }
+        
         if (updatedPayment.getStore() != null) {
             existingPayment.setStore(updatedPayment.getStore());
         }
-        
-        return salaryPaymentRepository.save(existingPayment);
+       
+        SalaryPayment saved = salaryPaymentRepository.save(existingPayment);
+        System.out.println("SalaryPayment guardado con salaryDate: " + saved.getSalaryDate());
+        return saved;
     }
 
     // Métodos de eliminación (DELETE)

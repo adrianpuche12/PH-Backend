@@ -19,6 +19,7 @@ public class SupplierPayment {
     @Column(nullable = false)
     private BigDecimal amount;
     
+    @NotNull(message = "La fecha de pago es obligatoria")
     @Column(nullable = false)
     private LocalDate paymentDate;
     
@@ -29,14 +30,6 @@ public class SupplierPayment {
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
-
-
-    @PrePersist
-    public void prePersist() {
-        if (paymentDate == null) {
-            paymentDate = LocalDate.now();
-        }
-    }
 
     // Getters y Setters
 
