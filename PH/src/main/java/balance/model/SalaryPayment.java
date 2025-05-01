@@ -26,19 +26,14 @@ public class SalaryPayment {
     @Column(nullable = false)
     private String username;
     
+    @NotNull(message = "La fecha de pago de salario es obligatoria")
     @Column(nullable = false)
-    private LocalDate depositDate;
+    private LocalDate salaryDate;
 
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
     
-    @PrePersist
-    public void prePersist() {
-        if (depositDate == null) {
-            depositDate = LocalDate.now();
-        }
-    }
 
     // Getters y Setters
 
@@ -74,12 +69,12 @@ public class SalaryPayment {
         this.username = username;
     }
 
-    public LocalDate getDepositDate() {
-        return depositDate;
+    public LocalDate getSalaryDate() {
+        return salaryDate;
     }
 
-    public void setDepositDate(LocalDate depositDate) {
-        this.depositDate = depositDate;
+    public void setSalaryDate(LocalDate salaryDate) {
+        this.salaryDate = salaryDate;
     }
 
     public Store getStore() {
