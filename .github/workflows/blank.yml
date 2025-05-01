@@ -3,7 +3,7 @@ name: Deploy Backend to Docker Hub
 on:
   push:
     branches:
-      - master  # Ejecuta el workflow cuando hay un push a la rama que escribas, en este caso será a la rama "master"
+      - dev  # Ejecuta el workflow cuando hay un push a la rama que escribas, en este caso será a la rama "dev"
 
 jobs:
   build-and-push:
