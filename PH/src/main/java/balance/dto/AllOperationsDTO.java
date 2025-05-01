@@ -12,6 +12,8 @@ public class AllOperationsDTO {
     private LocalDate date;
     private String description;
     private String username;
+    private Long storeId;
+    private String storeName;
     
     // Campos específicos de Closing Deposits
     private Integer closingsCount;
@@ -29,6 +31,10 @@ public class AllOperationsDTO {
         dto.setAmount(deposit.getAmount());
         dto.setDate(deposit.getDepositDate());
         dto.setUsername(deposit.getUsername());
+        if (deposit.getStore() != null) {
+            dto.setStoreId(deposit.getStore().getId());
+            dto.setStoreName(deposit.getStore().getName());
+        }
         dto.setClosingsCount(deposit.getClosingsCount());
         dto.setPeriodStart(deposit.getPeriodStart());
         dto.setPeriodEnd(deposit.getPeriodEnd());
@@ -43,6 +49,10 @@ public class AllOperationsDTO {
         dto.setAmount(payment.getAmount());
         dto.setDate(payment.getPaymentDate());
         dto.setUsername(payment.getUsername());
+        if (payment.getStore() != null) {
+            dto.setStoreId(payment.getStore().getId());
+            dto.setStoreName(payment.getStore().getName());
+        }
         dto.setSupplier(payment.getSupplier());
         dto.setDescription("Pago a proveedor: " + payment.getSupplier());
         return dto;
@@ -53,12 +63,33 @@ public class AllOperationsDTO {
         dto.setId(payment.getId());
         dto.setType("SALARY");
         dto.setAmount(payment.getAmount());
+        dto.setDate(payment.getDepositDate());
         dto.setDescription(payment.getDescription());
         dto.setUsername(payment.getUsername());
+        if (payment.getStore() != null) {
+            dto.setStoreId(payment.getStore().getId());
+            dto.setStoreName(payment.getStore().getName());
+        }
         return dto;
     }
 
     // Getters y Setters
+    public Long getStoreId() {
+        return storeId;
+    }
+    
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+    
+    public String getStoreName() {
+        return storeName;
+    }
+    
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
     public Long getId() {
         return id;
     }

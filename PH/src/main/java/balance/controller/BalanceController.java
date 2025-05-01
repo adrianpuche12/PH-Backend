@@ -13,9 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
+
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin(origins = "*")
 public class BalanceController {
 
     @Autowired
@@ -54,6 +55,9 @@ public class BalanceController {
     public ResponseEntity<BigDecimal> getBalance(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
+        System.out.println("Start Date received: " + startDate);
+        System.out.println("End Date received: " + endDate);
+
         BigDecimal balance = balanceService.calculateBalance(startDate, endDate);
         return ResponseEntity.ok(balance);
     }
@@ -77,6 +81,9 @@ public class BalanceController {
             updatedTransaction.setAmount(transaction.getAmount());
             updatedTransaction.setDate(transaction.getDate());
             updatedTransaction.setDescription(transaction.getDescription());
+            if (transaction.getStore() != null) {
+                updatedTransaction.setStore(transaction.getStore());
+            }
 
             // Guardar la transacción actualizada
             Transaction savedTransaction = balanceService.saveTransaction(updatedTransaction);

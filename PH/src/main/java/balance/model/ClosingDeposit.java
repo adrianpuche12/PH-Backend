@@ -35,6 +35,11 @@ public class ClosingDeposit {
     @Column(nullable = false)
     private String username;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store;
+
+
     @PrePersist
     public void prePersist() {
         if (depositDate == null) {
@@ -43,31 +48,70 @@ public class ClosingDeposit {
     }
 
     // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    
-    public Integer getClosingsCount() { return closingsCount; }
 
-    public void setClosingsCount(Integer closingsCount) { this.closingsCount = closingsCount; }
-    
-    public BigDecimal getAmount() { return amount; }
 
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-    
-    public LocalDate getDepositDate() { return depositDate; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setDepositDate(LocalDate depositDate) { this.depositDate = depositDate; }
-    
-    public LocalDate getPeriodStart() { return periodStart; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setPeriodStart(LocalDate periodStart) { this.periodStart = periodStart; }
-    
-    public LocalDate getPeriodEnd() { return periodEnd; }
+    public Integer getClosingsCount() {
+        return closingsCount;
+    }
 
-    public void setPeriodEnd(LocalDate periodEnd) { this.periodEnd = periodEnd; }
-    
-    public String getUsername() { return username; }
-    
-    public void setUsername(String username) { this.username = username; }
+    public void setClosingsCount(Integer closingsCount) {
+        this.closingsCount = closingsCount;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDate getDepositDate() {
+        return depositDate;
+    }
+
+    public void setDepositDate(LocalDate depositDate) {
+        this.depositDate = depositDate;
+    }
+
+    public LocalDate getPeriodStart() {
+        return periodStart;
+    }
+
+    public void setPeriodStart(LocalDate periodStart) {
+        this.periodStart = periodStart;
+    }
+
+    public LocalDate getPeriodEnd() {
+        return periodEnd;
+    }
+
+    public void setPeriodEnd(LocalDate periodEnd) {
+        this.periodEnd = periodEnd;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
 }
 

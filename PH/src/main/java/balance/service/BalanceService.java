@@ -28,8 +28,11 @@ public class BalanceService {
 
     // Método para calcular el balance entre dos fechas
     public BigDecimal calculateBalance(LocalDate startDate, LocalDate endDate) {
+        // Ajustar la fecha de fin para incluir el día completo
+        LocalDate adjustedEndDate = endDate.plusDays(1);
+
         // Obtener las transacciones dentro del rango de fechas
-        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
+        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, adjustedEndDate);
 
         // Si no hay transacciones, retornar cero
         if (transactions == null || transactions.isEmpty()) {
@@ -51,7 +54,6 @@ public class BalanceService {
         // Retornar el balance: ingreso - gasto
         return income.subtract(expense);
     }
-
 
     // Método para obtener una transacción por ID
     public Optional<Transaction> getTransactionById(Long id) {

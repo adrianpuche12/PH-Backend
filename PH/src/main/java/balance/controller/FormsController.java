@@ -13,9 +13,10 @@ import java.util.List;
 /*
  Endpoints para la gestión de depósitos de cierres, pagos a proveedores y salarios.
  */
-@CrossOrigin(origins = "*")
+
 @RestController
 @RequestMapping("/api/forms")
+@CrossOrigin(origins = "*")
 public class FormsController {
     
     @Autowired
@@ -51,19 +52,25 @@ public class FormsController {
     public ResponseEntity<List<ClosingDeposit>> getAllClosingDeposits() {
         return ResponseEntity.ok(formsService.getAllClosingDeposits());
     }
-
     /**
      * Obtiene todos los depósitos de cierre en un rango de fechas.
      * 
      * @param startDate Fecha inicial del rango (formato: YYYY-MM-DD)
      * @param endDate Fecha final del rango (formato: YYYY-MM-DD)
-     * @return ResponseEntity con la lista de depósitos encontrados
+     * @return ResponseEntity
+     * con la lista de depósitos encontrados
      */
     @GetMapping("/closing-deposits")
     public ResponseEntity<List<ClosingDeposit>> getClosingDeposits(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.ok(formsService.getClosingDeposits(startDate, endDate));
+    }
+
+    // 🆕 Endpoint para filtrar por store ID
+    @GetMapping("/closing-deposits/store/{storeId}")
+    public ResponseEntity<List<ClosingDeposit>> getByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(formsService.findByStoreId(storeId));
     }
 
     /**
@@ -137,5 +144,7 @@ public class FormsController {
     public ResponseEntity<List<SalaryPayment>> getAllSalaryPayments() {
         return ResponseEntity.ok(formsService.getAllSalaryPayments());
     }
+
+
     
 }
