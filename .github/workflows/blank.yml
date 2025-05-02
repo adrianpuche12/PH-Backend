@@ -3,7 +3,8 @@ name: Deploy Backend to Docker Hub
 on:
   push:
     branches:
-      - dev  # Ejecuta el workflow cuando hay un push a la rama que escribas, en este caso será a la rama "dev"
+      - master  # Ejecuta el workflow cuando hay un push a la rama "master"
+      - dev     # Ejecuta el workflow cuando hay un push a la rama "dev"
 
 jobs:
   build-and-push:
@@ -23,12 +24,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+      - name: Obtener nombre de la rama
+        id: branch_name
+        run: |
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          echo "🔖 Rama detectada: ${GITHUB_REF#refs/heads/}"
+
       - name: Define Image Tag
-        env:
-          IMAGE_NAME: baumanpeter/humberto:humbertobackend
         run: |
           echo "🔢 Configurando versión de la imagen..."
-          IMAGE_VERSION="${{ env.IMAGE_NAME }}-v${{ github.run_number }}"
+          if [ "${{ env.BRANCH_NAME }}" = "master" ]; then
+            IMAGE_NAME="baumanpeter/humberto:humbertobackend"
+          else
+            IMAGE_NAME="baumanpeter/humberto:humbertobackend-dev"
+          fi
+          IMAGE_VERSION="$IMAGE_NAME-v${{ github.run_number }}"
           echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
           echo "✅ Imagen con versión: $IMAGE_VERSION"
 
@@ -48,7 +58,7 @@ jobs:
 
       - name: Build Docker image and load locally
         run: |
-          echo "🚀 Construyendo la imagen Docker sin caché..."
+          echo "🚀 Construyendo la imagen Docker para la rama ${{ env.BRANCH_NAME }} sin caché..."
           docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
           echo "✅ Imagen construida y cargada en Docker local."
 
@@ -59,4 +69,4 @@ jobs:
         run: |
           echo "📤 Subiendo la imagen a Docker Hub..."
           docker push $IMAGE_VERSION
-          echo "✅ Imagen subida exitosamente a Docker Hub."
+          echo "✅ Imagen subida exitosamente a Docker Hub para la rama ${{ env.BRANCH_NAME }}."
