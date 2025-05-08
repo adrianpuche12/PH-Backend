@@ -3,13 +3,12 @@ name: Deploy Backend to Docker Hub
 on:
   push:
     branches:
-      - master  # Ejecuta el workflow cuando hay un push a la rama "master"
-      - dev     # Ejecuta el workflow cuando hay un push a la rama "dev"
+      - master  # Solo se ejecuta en push a master
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production  # Define el entorno de producción
+    environment: production
 
     steps:
       - name: Checkout repository
@@ -32,12 +31,7 @@ jobs:
 
       - name: Define Image Tag
         run: |
-          echo "🔢 Configurando versión de la imagen..."
-          if [ "${{ env.BRANCH_NAME }}" = "master" ]; then
-            IMAGE_NAME="baumanpeter/humberto:humbertobackend"
-          else
-            IMAGE_NAME="baumanpeter/humberto:humbertobackend-dev"
-          fi
+          IMAGE_NAME="baumanpeter/humberto:humbertobackend"
           IMAGE_VERSION="$IMAGE_NAME-v${{ github.run_number }}"
           echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
           echo "✅ Imagen con versión: $IMAGE_VERSION"
@@ -58,15 +52,28 @@ jobs:
 
       - name: Build Docker image and load locally
         run: |
-          echo "🚀 Construyendo la imagen Docker para la rama ${{ env.BRANCH_NAME }} sin caché..."
+          echo "🚀 Construyendo la imagen Docker..."
           docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
           echo "✅ Imagen construida y cargada en Docker local."
-
-      - name: List Docker images (debugging)
-        run: docker images
 
       - name: Push Docker image to Docker Hub
         run: |
           echo "📤 Subiendo la imagen a Docker Hub..."
           docker push $IMAGE_VERSION
-          echo "✅ Imagen subida exitosamente a Docker Hub para la rama ${{ env.BRANCH_NAME }}."
+          echo "✅ Imagen subida exitosamente."
+
+      - name: Deploy to Remote Server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "📥 Iniciando despliegue remoto..."
+            docker pull $IMAGE_VERSION
+            docker stop humbertobackend || true
+            docker rm humbertobackend || true
+            docker run -d --name humbertobackend -p 8080:8080 $IMAGE_VERSION
+            echo "🚀 Despliegue completado en el servidor."
+
+            
