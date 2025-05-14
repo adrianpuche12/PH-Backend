@@ -236,6 +236,11 @@ public class FormsService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "SupplierPayment no encontrado con id " + id));
         existingPayment.setAmount(updatedPayment.getAmount());
         //SexistingPayment.setDescription(updatedPayment.getDescription());
+
+        if (updatedPayment.getDescription() != null) {
+            existingPayment.setDescription(updatedPayment.getDescription());
+        }
+
         existingPayment.setUsername(updatedPayment.getUsername());
         
         if (updatedPayment.getSupplier() != null) {

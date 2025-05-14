@@ -13,7 +13,10 @@ public class SupplierPayment {
     private Long id;
     
     private String supplier;
-    
+
+    @Size(max = 255, message = "La descripción no puede tener más de 255 caracteres")
+    private String description;
+
     @NotNull(message = "El monto es obligatorio")
     @DecimalMin(value = "0.0", message = "El monto debe ser mayor que 0")
     @Column(nullable = false)
@@ -55,6 +58,14 @@ public class SupplierPayment {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDate getPaymentDate() {

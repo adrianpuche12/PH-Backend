@@ -113,7 +113,7 @@ public class OperationsController {
             case "SUPPLIER":
                 SupplierPayment supplierPayment = new SupplierPayment();
                 supplierPayment.setAmount(dto.getAmount());
-                //SsupplierPayment.setDescription(dto.getDescription());
+                supplierPayment.setDescription(dto.getDescription());
                 supplierPayment.setUsername(dto.getUsername());
                 supplierPayment.setSupplier(dto.getSupplier());
                 if (dto.getPaymentDate() != null) {

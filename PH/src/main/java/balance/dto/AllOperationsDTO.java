@@ -2,6 +2,7 @@ package balance.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -13,17 +14,17 @@ public class AllOperationsDTO {
     private LocalDate depositDate;
     private LocalDate paymentDate;
     private LocalDate salaryDate;
-    
+
     private String description;
     private String username;
     private Long storeId;
     private String storeName;
-    
+
     // Campos específicos de Closing Deposits
     private Integer closingsCount;
     private LocalDate periodStart;
     private LocalDate periodEnd;
-    
+
     // Campos específicos de Supplier Payments
     private String supplier;
 
@@ -60,7 +61,13 @@ public class AllOperationsDTO {
             dto.setStoreName(payment.getStore().getName());
         }
         dto.setSupplier(payment.getSupplier());
-        dto.setDescription("Pago a proveedor: " + payment.getSupplier());
+
+        if (payment.getDescription() != null && !payment.getDescription().isEmpty()) {
+            dto.setDescription(payment.getDescription());
+        } else {
+            dto.setDescription("Pago a proveedor: " + payment.getSupplier());
+        }
+
         return dto;
     }
 
@@ -77,6 +84,7 @@ public class AllOperationsDTO {
             dto.setStoreId(payment.getStore().getId());
             dto.setStoreName(payment.getStore().getName());
         }
+
         return dto;
     }
 
@@ -84,15 +92,15 @@ public class AllOperationsDTO {
     public Long getStoreId() {
         return storeId;
     }
-    
+
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
     }
-    
+
     public String getStoreName() {
         return storeName;
     }
-    
+
     public void setStoreName(String storeName) {
         this.storeName = storeName;
     }

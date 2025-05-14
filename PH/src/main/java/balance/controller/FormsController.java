@@ -83,7 +83,8 @@ public class FormsController {
      * {
      *     "supplier": "Pollo Rey",
      *     "amount": 5000.00,
-     *     "username": "usuario123"
+     *     "username": "usuario123",
+     *     "description": "Pago quincenal de materia prima"
      * }
      */
     @PostMapping("/supplier-payments")
