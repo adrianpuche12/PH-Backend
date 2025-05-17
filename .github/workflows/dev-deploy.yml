@@ -9,7 +9,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: development
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,13 +47,13 @@ jobs:
       - name: Build Docker image and load locally
         run: |
           echo "🚀 Construyendo la imagen Docker de desarrollo..."
-          docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
+          docker buildx build --platform linux/amd64 --no-cache --load -t ${{ env.IMAGE_VERSION }} ./PH
           echo "✅ Imagen de desarrollo construida y cargada en Docker local."
 
       - name: Push Docker image to Docker Hub
         run: |
           echo "📤 Subiendo la imagen de desarrollo a Docker Hub..."
-          docker push $IMAGE_VERSION
+          docker push ${{ env.IMAGE_VERSION }}
           echo "✅ Imagen de desarrollo subida exitosamente."
 
       - name: Deploy to Dev Server via SSH
@@ -62,16 +62,18 @@ jobs:
           host: ${{ secrets.DEV_SSH_HOST || secrets.SSH_HOST }}
           username: ${{ secrets.DEV_SSH_USER || secrets.SSH_USER }}
           key: ${{ secrets.DEV_SSH_KEY || secrets.SSH_KEY }}
+          envs: IMAGE_VERSION
           script: |
             echo "📥 Iniciando despliegue remoto en ambiente de desarrollo..."
-            docker pull $IMAGE_VERSION
-            docker stop humberto_backend_dev || true
-            docker rm humberto_backend_dev || true
-            cd /root/Proyecto_H/DockerComposeHumberto-dev  # Reemplaza con la ruta real
+            docker pull ${{ env.IMAGE_VERSION }}
+            
+            cd /root/Proyecto_H/DockerComposeHumberto-dev  # Directorio del servidor
             
             # Actualizar la versión en el docker-compose.yml
-            sed -i "s/baumanpeter\\/humberto:humbertobackend-dev-v[0-9]\\+/$IMAGE_VERSION/g" docker-compose.yml
+            sed -i "s|baumanpeter/humberto:humbertobackend-dev-v[0-9]*|${{ env.IMAGE_VERSION }}|g" docker-compose.yml
             
-            # Reiniciar servicios
-            docker-compose up -d backend-dev
+            # Ejecutar el script de actualización
+            cd /root/Proyecto_H
+            ./update_all_services.sh
+            
             echo "🚀 Despliegue de desarrollo completado en el servidor."
