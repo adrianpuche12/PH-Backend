@@ -23,6 +23,7 @@ balance\repository\TransactionRepository.class
 balance\config\DevDataSourceConfig.class
 balance\model\Store.class
 balance\controller\BalanceController.class
+balance\controller\TestDbController.class
 balance\repository\ClosingDepositRepository.class
 balance\service\SalaryPaymentService.class
 balance\BalanceApplication.class
