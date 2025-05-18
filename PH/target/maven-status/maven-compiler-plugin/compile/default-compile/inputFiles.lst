@@ -1,5 +1,6 @@
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\BalanceApplication.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\controller\BalanceController.java
+C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\controller\DebugController.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\controller\FormsController.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\controller\OperationsController.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\controller\SalaryPaymentController.java
@@ -23,4 +24,6 @@ C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\service\StoreService.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\service\SupplierPaymentService.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\balance\service\TransactionService.java
+C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\config\DevDataSourceConfig.java
+C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\config\ProdDataSourceConfig.java
 C:\Users\jorge\OneDrive\Desktop\Desk\Proyecto de Peter\PH-Proyect\PH Backend\PH\src\main\java\package-info.java

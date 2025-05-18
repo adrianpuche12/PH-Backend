@@ -1,5 +1,7 @@
+balance\config\ProdDataSourceConfig.class
 balance\dto\AllOperationsDTO.class
 balance\controller\StoreController.class
+balance\controller\DebugController.class
 balance\repository\SalaryPaymentRepository.class
 balance\service\BalanceService.class
 package-info.class
@@ -18,6 +20,7 @@ balance\repository\StoreRepository.class
 balance\controller\OperationsController.class
 balance\model\SalaryPayment.class
 balance\repository\TransactionRepository.class
+balance\config\DevDataSourceConfig.class
 balance\model\Store.class
 balance\controller\BalanceController.class
 balance\repository\ClosingDepositRepository.class
