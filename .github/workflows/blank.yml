@@ -1,17 +1,17 @@
-name: Deploy Backend to Docker Hub
+name: Desplegar Backend a Docker Hub y Servidor (Desarrollo)
 
 on:
   push:
     branches:
-      - master  # Solo se ejecuta en push a master
+      - dev  # Solo se ejecuta en push a dev
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
 
     steps:
-      - name: Checkout repository
+      - name: Checkout del repositorio
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -23,20 +23,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Obtener nombre de la rama
-        id: branch_name
+      - name: Definir nombre de la imagen y versión (Dev)
         run: |
-          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-          echo "🔖 Rama detectada: ${GITHUB_REF#refs/heads/}"
-
-      - name: Define Image Tag
-        run: |
-          IMAGE_NAME="baumanpeter/humberto:humbertobackend"
-          IMAGE_VERSION="$IMAGE_NAME-v${{ github.run_number }}"
+          IMAGE_NAME="baumanpeter/humberto:humbertobackend-dev"
+          VERSION="v${{ github.run_number }}"
+          IMAGE_VERSION="$IMAGE_NAME-$VERSION"
           echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
-          echo "✅ Imagen con versión: $IMAGE_VERSION"
+          echo "✅ Imagen de desarrollo con versión: $IMAGE_VERSION"
 
-      - name: Verify directory contents
+      - name: Verificar contenido del directorio
         run: ls -l ./PH
 
       - name: Set up Java & Maven
@@ -52,9 +47,9 @@ jobs:
 
       - name: Build Docker image and load locally
         run: |
-          echo "🚀 Construyendo la imagen Docker..."
+          echo "🚀 Construyendo la imagen Docker de desarrollo..."
           docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
-          echo "✅ Imagen construida y cargada en Docker local."
+          echo "✅ Imagen de desarrollo construida y cargada localmente."
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -62,18 +57,24 @@ jobs:
           docker push $IMAGE_VERSION
           echo "✅ Imagen subida exitosamente."
 
-      - name: Deploy to Remote Server via SSH
+      - name: Desplegar al servidor remoto (actualizando docker-compose de desarrollo)
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.DEV_SSH_HOST || secrets.SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USER || secrets.SSH_USER }}
+          key: ${{ secrets.DEV_SSH_KEY || secrets.SSH_KEY }}
+          envs: IMAGE_VERSION
           script: |
-            echo "📥 Iniciando despliegue remoto..."
+            echo "📥 Iniciando despliegue remoto del backend (dev)..."
             docker pull $IMAGE_VERSION
-            docker stop humbertobackend || true
-            docker rm humbertobackend || true
-            docker run -d --name humbertobackend -p 8080:8080 $IMAGE_VERSION
-            echo "🚀 Despliegue completado en el servidor."
 
-            
+            cd /root/Proyecto_H/DockerComposeHumberto-dev
+
+            echo "🔄 Actualizando imagen en docker-compose.yml..."
+            sed -i "s|baumanpeter/humberto:humbertobackend-dev-v[0-9]*|$IMAGE_VERSION|g" docker-compose.yml
+
+            echo "🛠 Ejecutando script de actualización..."
+            cd /root/Proyecto_H
+            ./update_all_services.sh
+
+            echo "🚀 Despliegue de desarrollo completado en el servidor."
