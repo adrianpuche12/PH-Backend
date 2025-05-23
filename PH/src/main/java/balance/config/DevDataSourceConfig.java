@@ -1,4 +1,4 @@
-balance.config;
+package balance.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,7 +22,7 @@ public class DevDataSourceConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(DevDataSourceConfig.class);
 
-    /
+    /**
      * Crea y configura un DataSource para el ambiente de desarrollo.
      * La anotación @Primary asegura que este DataSource se utilice preferentemente
      * sobre cualquier otro DataSource definido.
@@ -51,3 +51,5 @@ public class DevDataSourceConfig {
         return new HikariDataSource(config);
     }
 }
+
+
