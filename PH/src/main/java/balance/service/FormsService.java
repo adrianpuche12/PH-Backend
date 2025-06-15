@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import balance.model.Store;
+
+
 // ================================================================
 // AGREGAR ESTOS IMPORTS AL INICIO DEL ARCHIVO
 // ================================================================
