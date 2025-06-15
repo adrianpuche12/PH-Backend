@@ -10,6 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+
+// ================================================================
+// AGREGAR ESTOS IMPORTS AL INICIO DEL ARCHIVO
+// ================================================================
+import balance.dto.GastoAdminRequestDTO;
+import balance.dto.GastoAdminResponseDTO;
+import balance.model.GastoAdmin;
+
+
 /*
  Endpoints para la gestión de depósitos de cierres, pagos a proveedores y salarios.
  */
@@ -60,6 +69,61 @@ public class FormsController {
      * @return ResponseEntity
      * con la lista de depósitos encontrados
      */
+
+
+// ================================================================
+// AGREGAR ESTOS MÉTODOS AL FormsController EXISTENTE
+// ================================================================
+
+    /**
+     * Crea un nuevo gasto administrativo.
+     * Este endpoint tiene lógica especial: divide el monto entre locales y crea
+     * transacciones individuales para cada local según los porcentajes especificados.
+     * 
+     * @param request Objeto GastoAdminRequestDTO con los datos del gasto administrativo
+     * @return ResponseEntity con el resumen de transacciones creadas
+     * 
+     * Ejemplo de JSON requerido:
+     * {
+     *     "fecha": "2024-01-15",
+     *     "monto": 1000.00,
+     *     "descripcion": "Pago de electricidad",
+     *     "tipo": "expense",
+     *     "porcentajeDanli": 60,
+     *     "porcentajeParaiso": 40
+     * }
+     */
+    @PostMapping("/gasto-admin")
+    public ResponseEntity<GastoAdminResponseDTO> addGastoAdmin(
+            @Valid @RequestBody GastoAdminRequestDTO request) {
+        return ResponseEntity.ok(formsService.saveGastoAdmin(request));
+    }
+
+    /**
+     * Obtiene todos los gastos administrativos registrados.
+     * 
+     * @return ResponseEntity con la lista de todos los gastos administrativos
+     */
+    @GetMapping("/gasto-admin/all")
+    public ResponseEntity<List<GastoAdmin>> getAllGastosAdmin() {
+        return ResponseEntity.ok(formsService.getAllGastosAdmin());
+    }
+
+    /**
+     * Obtiene gastos administrativos en un rango de fechas.
+     * 
+     * @param startDate Fecha inicial del rango (formato: YYYY-MM-DD)
+     * @param endDate Fecha final del rango (formato: YYYY-MM-DD)
+     * @return ResponseEntity con la lista de gastos administrativos encontrados
+     */
+    @GetMapping("/gasto-admin")
+    public ResponseEntity<List<GastoAdmin>> getGastosAdmin(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(formsService.getGastosAdmin(startDate, endDate));
+    }
+
+
     @GetMapping("/closing-deposits")
     public ResponseEntity<List<ClosingDeposit>> getClosingDeposits(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
