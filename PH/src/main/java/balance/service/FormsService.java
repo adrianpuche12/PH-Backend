@@ -87,13 +87,13 @@ public class FormsService {
             return t2.getDate().compareTo(t1.getDate());
         });
 
-
+/*
           allOperations.addAll(
                 gastoAdminRepository.findAll().stream()
                         .map(AllOperationsDTO::fromGastoAdmin)
                         .collect(Collectors.toList())
         );
-
+*/
         return allOperations;
     }
 
@@ -120,12 +120,12 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-
+/*
          gastoAdminRepository.findByFechaBetween(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromGastoAdmin)
                 .forEach(allOperations::add);
-
+*/
         return allOperations;
     }
 
@@ -153,12 +153,12 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-        
+        /*
          gastoAdminRepository.findAll()
                 .stream()
                 .map(AllOperationsDTO::fromGastoAdmin)
                 .forEach(allOperations::add);
-
+*/
         return allOperations;
     }
 
@@ -186,12 +186,12 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-
+/*
         gastoAdminRepository.findByFechaBetween(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromGastoAdmin)
                 .forEach(allOperations::add);
-
+*/
         return allOperations;
     }
 
