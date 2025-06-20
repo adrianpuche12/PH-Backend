@@ -21,11 +21,6 @@ import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import balance.model.Store;
-
-
-// ================================================================
-// AGREGAR ESTOS IMPORTS AL INICIO DEL ARCHIVO
-// ================================================================
 import balance.dto.GastoAdminRequestDTO;
 import balance.dto.GastoAdminResponseDTO;
 import balance.model.GastoAdmin;
@@ -38,9 +33,6 @@ import balance.repository.StoreRepository;
 @Transactional
 public class FormsService {
 
- // ================================================================
-// AGREGAR ESTE @AUTOWIRED EN LA SECCIÓN DE REPOSITORIOS
-// ================================================================
     @Autowired
     private GastoAdminRepository gastoAdminRepository;
 
@@ -87,30 +79,23 @@ public class FormsService {
             return t2.getDate().compareTo(t1.getDate());
         });
 
-/*
-          allOperations.addAll(
-                gastoAdminRepository.findAll().stream()
-                        .map(AllOperationsDTO::fromGastoAdmin)
-                        .collect(Collectors.toList())
-        );
-*/
         return allOperations;
     }
 
     public List<AllOperationsDTO> getOperationsByDateRange(LocalDate startDate, LocalDate endDate) {
         List<AllOperationsDTO> allOperations = new ArrayList<>();
 
-        closingDepositRepository.findByDepositDateBetween(startDate, endDate)
+        closingDepositRepository.findByDepositDateBetweenOrderByDepositDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromClosingDeposit)
                 .forEach(allOperations::add);
 
-        supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate)
+        supplierPaymentRepository.findByPaymentDateBetweenOrderByPaymentDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findBySalaryDateBetween(startDate, endDate)
+        salaryPaymentRepository.findBySalaryDateBetweenOrderBySalaryDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -120,12 +105,7 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-/*
-         gastoAdminRepository.findByFechaBetween(startDate, endDate)
-                .stream()
-                .map(AllOperationsDTO::fromGastoAdmin)
-                .forEach(allOperations::add);
-*/
+
         return allOperations;
     }
 
@@ -153,12 +133,7 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-        /*
-         gastoAdminRepository.findAll()
-                .stream()
-                .map(AllOperationsDTO::fromGastoAdmin)
-                .forEach(allOperations::add);
-*/
+
         return allOperations;
     }
 
@@ -186,12 +161,7 @@ public class FormsService {
             if (o2.getDate() == null) return -1;
             return o2.getDate().compareTo(o1.getDate());
         });
-/*
-        gastoAdminRepository.findByFechaBetween(startDate, endDate)
-                .stream()
-                .map(AllOperationsDTO::fromGastoAdmin)
-                .forEach(allOperations::add);
-*/
+
         return allOperations;
     }
 
@@ -204,11 +174,11 @@ public class FormsService {
     }
 
     public List<ClosingDeposit> getClosingDeposits(LocalDate startDate, LocalDate endDate) {
-        return closingDepositRepository.findByDepositDateBetween(startDate, endDate);
+        return closingDepositRepository.findByDepositDateBetweenOrderByDepositDateDesc(startDate, endDate);
     }
 
     public List<ClosingDeposit> getAllClosingDeposits() {
-        return closingDepositRepository.findAll();
+        return findAllOrderByDepositDateDesc();
     }
 
 
@@ -221,11 +191,11 @@ public class FormsService {
     }
 
     public List<SupplierPayment> getSupplierPayments(LocalDate startDate, LocalDate endDate) {
-        return supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate);
+        return supplierPaymentRepository.findByPaymentDateBetweenOrderByPaymentDateDesc(startDate, endDate);
     }
 
     public List<SupplierPayment> getAllSupplierPayments() {
-        return supplierPaymentRepository.findAll();
+        return supplierPaymentRepository.findAllOrderByPaymentDateDesc();
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
@@ -236,10 +206,8 @@ public class FormsService {
     }
 
     public List<SalaryPayment> getAllSalaryPayments() {
-        return salaryPaymentRepository.findAll();
+        return salaryPaymentRepository.findAllOrderBySalaryDateDesc();
     }
-
-    //Metodos de filtros por local
 
     // 🔍 Filtro por store ID
     public List<ClosingDeposit> findByStoreId(Long storeId) {
@@ -358,17 +326,6 @@ public class FormsService {
         salaryPaymentRepository.deleteById(id);
     }
 
-
-    // ================================================================
-// AGREGAR ESTOS MÉTODOS AL FormsService
-// ================================================================
-
-    /**
-     * Lógica especial para gastos administrativos:
-     * 1. Guarda el gasto admin en tabla gasto_admin
-     * 2. Crea transacciones individuales para cada local según porcentajes
-     * 3. Retorna resumen de operaciones creadas
-     */
     public GastoAdminResponseDTO saveGastoAdmin(GastoAdminRequestDTO request) {
         // Validar que los porcentajes sumen 100%
         if (!isValidPercentages(request.getPorcentajeDanli(), request.getPorcentajeParaiso())) {
@@ -458,30 +415,16 @@ public class FormsService {
         );
     }
 
-
-
-    /**
-     * Obtener todos los gastos administrativos
-     */
     public List<GastoAdmin> getAllGastosAdmin() {
         return gastoAdminRepository.findAll();
     }
 
-    /**
-     * Obtener gastos administrativos por rango de fechas
-     */
+
     public List<GastoAdmin> getGastosAdmin(LocalDate startDate, LocalDate endDate) {
         return gastoAdminRepository.findByFechaBetween(startDate, endDate);
     }
 
-    // ================================================================
-// AGREGAR ESTOS MÉTODOS AL FormsService (después de los métodos existentes de gastoAdmin)
-// ================================================================
 
-    /**
-     * Actualizar gasto administrativo existente
-     * NOTA: Solo actualiza campos básicos, no recalcula transacciones
-     */
     public GastoAdmin updateGastoAdmin(Long id, GastoAdmin updatedGastoAdmin) {
         GastoAdmin existingGastoAdmin = gastoAdminRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
@@ -509,10 +452,6 @@ public class FormsService {
         return saved;
     }
 
-    /**
-     * Eliminar gasto administrativo
-     * ADVERTENCIA: Esto NO elimina las transacciones relacionadas automáticamente
-     */
     public void deleteGastoAdmin(Long id) {
         if (!gastoAdminRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
@@ -521,10 +460,6 @@ public class FormsService {
         gastoAdminRepository.deleteById(id);
     }
 
-
-
-
-    // Métodos auxiliares
     private boolean isValidPercentages(Integer porcentajeDanli, Integer porcentajeParaiso) {
         if (porcentajeDanli == null || porcentajeParaiso == null) {
             return false;
