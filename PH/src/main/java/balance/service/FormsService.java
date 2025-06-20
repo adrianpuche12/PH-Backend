@@ -178,7 +178,7 @@ public class FormsService {
     }
 
     public List<ClosingDeposit> getAllClosingDeposits() {
-        return findAllOrderByDepositDateDesc();
+        return closingDepositRepository.findAllOrderByDepositDateDesc();
     }
 
 
