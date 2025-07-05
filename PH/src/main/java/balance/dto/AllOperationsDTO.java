@@ -228,6 +228,7 @@ public class AllOperationsDTO {
         dto.setDate(gastoAdmin.getFecha());
         dto.setUsername(gastoAdmin.getUsername());
         
+        
         // No tiene store específico porque se divide entre locales
         dto.setStoreId(null);
         dto.setStoreName("Administrativo (Dividido)");
