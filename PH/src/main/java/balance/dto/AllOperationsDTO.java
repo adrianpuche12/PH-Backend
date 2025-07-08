@@ -25,6 +25,7 @@ public class AllOperationsDTO {
     private String username;
     private Long storeId;
     private String storeName;
+    private String imageUri;
 
     // Campos específicos de Closing Deposits
     private Integer closingsCount;
@@ -51,6 +52,7 @@ public class AllOperationsDTO {
         dto.setPeriodStart(deposit.getPeriodStart());
         dto.setPeriodEnd(deposit.getPeriodEnd());
         dto.setDescription("Depósito de " + deposit.getClosingsCount() + " cierres");
+        dto.setImageUri(deposit.getImageUri());
         return dto;
     }
 
@@ -73,6 +75,7 @@ public class AllOperationsDTO {
         } else {
             dto.setDescription("Pago a proveedor: " + payment.getSupplier());
         }
+        dto.setImageUri(payment.getImageUri());
 
         return dto;
     }
@@ -90,7 +93,8 @@ public class AllOperationsDTO {
             dto.setStoreId(payment.getStore().getId());
             dto.setStoreName(payment.getStore().getName());
         }
-
+        dto.setImageUri(payment.getImageUri());
+        
         return dto;
     }
 
@@ -213,6 +217,13 @@ public class AllOperationsDTO {
 
     public void setSalaryDate(LocalDate salaryDate) {
         this.salaryDate = salaryDate;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
 

@@ -30,6 +30,9 @@ public class SupplierPayment {
     @Column(nullable = false)
     private String username;
 
+    @Column(name = "image_uri", length = 500)
+    private String imageUri;
+
     @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
@@ -90,5 +93,13 @@ public class SupplierPayment {
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public String getImageUri() { 
+        return imageUri; 
+    }
+
+    public void setImageUri(String imageUri) { 
+        this.imageUri = imageUri; 
     }
 }

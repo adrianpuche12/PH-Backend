@@ -98,6 +98,7 @@ public class OperationsController {
                 gastoAdmin.setMonto(dto.getAmount());
                 gastoAdmin.setDescripcion(dto.getDescription());
                 gastoAdmin.setUsername(dto.getUsername());
+                gastoAdmin.setImageUri(dto.getImageUri());
                 if (dto.getDate() != null) {
                     gastoAdmin.setFecha(dto.getDate());
                 }
