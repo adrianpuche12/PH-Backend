@@ -1,10 +1,8 @@
 package balance.service;
-
 import balance.model.SalaryPayment;
 import balance.repository.SalaryPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +13,7 @@ public class SalaryPaymentService {
     private SalaryPaymentRepository salaryPaymentRepository;
 
     public List<SalaryPayment> findAll() {
-        return salaryPaymentRepository.findAll();
+        return salaryPaymentRepository.findAllOrderBySalaryDateDesc();
     }
 
     public Optional<SalaryPayment> findById(Long id) {
@@ -30,8 +28,7 @@ public class SalaryPaymentService {
         salaryPaymentRepository.deleteById(id);
     }
 
-    // 🔍 Filtro por store ID
     public List<SalaryPayment> findByStoreId(Long storeId) {
-        return salaryPaymentRepository.findByStoreId(storeId);
+        return salaryPaymentRepository.findByStoreIdOrderBySalaryDateDesc(storeId);
     }
 }

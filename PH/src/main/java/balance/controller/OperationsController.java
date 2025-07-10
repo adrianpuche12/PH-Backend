@@ -16,6 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.List;
 
+// ================================================================
+// AGREGAR ESTE IMPORT AL INICIO DEL ARCHIVO
+// ================================================================
+import balance.model.GastoAdmin;
+
+
 @RestController
 @RequestMapping("/api/operations")
 @CrossOrigin(origins = "*")
@@ -82,6 +88,25 @@ public class OperationsController {
             @PathVariable Long id,
             @RequestBody AllOperationsDTO dto) {
         switch (type.toUpperCase()) {
+
+            // ================================================================
+// MODIFICAR EL MÉTODO updateOperation() - AGREGAR ESTE CASO AL SWITCH
+// ================================================================
+
+            case "GASTO_ADMIN":
+                GastoAdmin gastoAdmin = new GastoAdmin();
+                gastoAdmin.setMonto(dto.getAmount());
+                gastoAdmin.setDescripcion(dto.getDescription());
+                gastoAdmin.setUsername(dto.getUsername());
+                if (dto.getDate() != null) {
+                    gastoAdmin.setFecha(dto.getDate());
+                }
+                
+                // Los porcentajes no se pueden extraer del DTO unificado
+                // Se mantienen los valores originales
+                GastoAdmin updatedGastoAdmin = formsService.updateGastoAdmin(id, gastoAdmin);
+                return ResponseEntity.ok(AllOperationsDTO.fromGastoAdmin(updatedGastoAdmin));
+
             case "CLOSING":
                 // Se actualiza sin descripción, ya que el modelo ClosingDeposit no la tiene.
                 ClosingDeposit closingDeposit = new ClosingDeposit();
@@ -176,6 +201,13 @@ public class OperationsController {
             @PathVariable String type,
             @PathVariable Long id) {
         switch (type.toUpperCase()) {
+            // ================================================================
+// MODIFICAR EL MÉTODO deleteOperation() - AGREGAR ESTE CASO AL SWITCH
+// ================================================================
+
+            case "GASTO_ADMIN":
+                formsService.deleteGastoAdmin(id);
+                break;
             case "CLOSING":
                 formsService.deleteClosingDeposit(id);
                 break;

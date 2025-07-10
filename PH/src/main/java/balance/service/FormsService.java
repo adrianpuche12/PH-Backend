@@ -18,9 +18,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import balance.model.Store;
+import balance.dto.GastoAdminRequestDTO;
+import balance.dto.GastoAdminResponseDTO;
+import balance.model.GastoAdmin;
+import balance.model.Transaction;
+import balance.repository.GastoAdminRepository;
+import balance.repository.TransactionRepository;
+import balance.repository.StoreRepository;
+
 @Service
 @Transactional
 public class FormsService {
+
+    @Autowired
+    private GastoAdminRepository gastoAdminRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private StoreRepository storeRepository;
 
     @Autowired
     private ClosingDepositRepository closingDepositRepository;
@@ -65,17 +85,17 @@ public class FormsService {
     public List<AllOperationsDTO> getOperationsByDateRange(LocalDate startDate, LocalDate endDate) {
         List<AllOperationsDTO> allOperations = new ArrayList<>();
 
-        closingDepositRepository.findByDepositDateBetween(startDate, endDate)
+        closingDepositRepository.findByDepositDateBetweenOrderByDepositDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromClosingDeposit)
                 .forEach(allOperations::add);
 
-        supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate)
+        supplierPaymentRepository.findByPaymentDateBetweenOrderByPaymentDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSupplierPayment)
                 .forEach(allOperations::add);
 
-        salaryPaymentRepository.findBySalaryDateBetween(startDate, endDate)
+        salaryPaymentRepository.findBySalaryDateBetweenOrderBySalaryDateDesc(startDate, endDate)
                 .stream()
                 .map(AllOperationsDTO::fromSalaryPayment)
                 .forEach(allOperations::add);
@@ -154,11 +174,11 @@ public class FormsService {
     }
 
     public List<ClosingDeposit> getClosingDeposits(LocalDate startDate, LocalDate endDate) {
-        return closingDepositRepository.findByDepositDateBetween(startDate, endDate);
+        return closingDepositRepository.findByDepositDateBetweenOrderByDepositDateDesc(startDate, endDate);
     }
 
     public List<ClosingDeposit> getAllClosingDeposits() {
-        return closingDepositRepository.findAll();
+        return closingDepositRepository.findAllOrderByDepositDateDesc();
     }
 
 
@@ -171,11 +191,11 @@ public class FormsService {
     }
 
     public List<SupplierPayment> getSupplierPayments(LocalDate startDate, LocalDate endDate) {
-        return supplierPaymentRepository.findByPaymentDateBetween(startDate, endDate);
+        return supplierPaymentRepository.findByPaymentDateBetweenOrderByPaymentDateDesc(startDate, endDate);
     }
 
     public List<SupplierPayment> getAllSupplierPayments() {
-        return supplierPaymentRepository.findAll();
+        return supplierPaymentRepository.findAllOrderByPaymentDateDesc();
     }
 
     public SalaryPayment saveSalaryPayment(SalaryPayment payment) {
@@ -186,10 +206,8 @@ public class FormsService {
     }
 
     public List<SalaryPayment> getAllSalaryPayments() {
-        return salaryPaymentRepository.findAll();
+        return salaryPaymentRepository.findAllOrderBySalaryDateDesc();
     }
-
-    //Metodos de filtros por local
 
     // 🔍 Filtro por store ID
     public List<ClosingDeposit> findByStoreId(Long storeId) {
@@ -306,5 +324,151 @@ public class FormsService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "SalaryPayment no encontrado con id " + id);
         }
         salaryPaymentRepository.deleteById(id);
+    }
+
+    public GastoAdminResponseDTO saveGastoAdmin(GastoAdminRequestDTO request) {
+        // Validar que los porcentajes sumen 100%
+        if (!isValidPercentages(request.getPorcentajeDanli(), request.getPorcentajeParaiso())) {
+            throw new IllegalArgumentException("Los porcentajes deben sumar exactamente 100%");
+        }
+
+        // 1. Guardar registro en tabla gasto_admin para auditoría
+        GastoAdmin gastoAdmin = new GastoAdmin();
+        gastoAdmin.setFecha(request.getFecha());
+        gastoAdmin.setMonto(request.getMonto());
+        gastoAdmin.setDescripcion(request.getDescripcion());
+        gastoAdmin.setPorcentajeDanli(request.getPorcentajeDanli());
+        gastoAdmin.setPorcentajeParaiso(request.getPorcentajeParaiso());
+        gastoAdmin.setUsername("admin_user"); // O username del contexto
+        
+        GastoAdmin gastoAdminSaved = gastoAdminRepository.save(gastoAdmin);
+
+        // 2. Crear transacciones individuales por local
+        List<GastoAdminResponseDTO.TransaccionCreada> transaccionesCreadas = new ArrayList<>();
+        int transaccionesCount = 0;
+
+        // Obtener stores (asumir ID 1=Danli, ID 2=El Paraíso)
+        Store storeDanli = storeRepository.findById(1L).orElseThrow(() -> 
+            new IllegalArgumentException("Store Danli no encontrado"));
+        Store storeParaiso = storeRepository.findById(2L).orElseThrow(() -> 
+            new IllegalArgumentException("Store El Paraíso no encontrado"));
+
+        // Crear transacción para Danli si el porcentaje > 0
+        if (request.getPorcentajeDanli() > 0) {
+            BigDecimal montoDanli = calcularMonto(request.getMonto(), request.getPorcentajeDanli());
+            
+            Transaction transactionDanli = new Transaction();
+            transactionDanli.setType(request.getTipo());
+            transactionDanli.setAmount(montoDanli);
+            transactionDanli.setDate(request.getFecha());
+            transactionDanli.setDescription(String.format("%s (Danli %d%%)", 
+                request.getDescripcion(), request.getPorcentajeDanli()));
+            transactionDanli.setStore(storeDanli);
+            
+            Transaction savedDanli = transactionRepository.save(transactionDanli);
+            transaccionesCount++;
+            
+            transaccionesCreadas.add(new GastoAdminResponseDTO.TransaccionCreada(
+                savedDanli.getId(),
+                savedDanli.getType(),
+                savedDanli.getAmount(),
+                savedDanli.getDate(),
+                savedDanli.getDescription(),
+                "Danli",
+                request.getPorcentajeDanli()
+            ));
+        }
+
+        // Crear transacción para El Paraíso si el porcentaje > 0
+        if (request.getPorcentajeParaiso() > 0) {
+            BigDecimal montoParaiso = calcularMonto(request.getMonto(), request.getPorcentajeParaiso());
+            
+            Transaction transactionParaiso = new Transaction();
+            transactionParaiso.setType(request.getTipo());
+            transactionParaiso.setAmount(montoParaiso);
+            transactionParaiso.setDate(request.getFecha());
+            transactionParaiso.setDescription(String.format("%s (El Paraíso %d%%)", 
+                request.getDescripcion(), request.getPorcentajeParaiso()));
+            transactionParaiso.setStore(storeParaiso);
+            
+            Transaction savedParaiso = transactionRepository.save(transactionParaiso);
+            transaccionesCount++;
+            
+            transaccionesCreadas.add(new GastoAdminResponseDTO.TransaccionCreada(
+                savedParaiso.getId(),
+                savedParaiso.getType(),
+                savedParaiso.getAmount(),
+                savedParaiso.getDate(),
+                savedParaiso.getDescription(),
+                "El Paraíso",
+                request.getPorcentajeParaiso()
+            ));
+        }
+
+        // 3. Construir respuesta
+        return new GastoAdminResponseDTO(
+            "Gasto administrativo creado exitosamente. Se crearon " + transaccionesCount + " transacciones.",
+            transaccionesCount,
+            request.getMonto(),
+            transaccionesCreadas,
+            gastoAdminSaved.getId()
+        );
+    }
+
+    public List<GastoAdmin> getAllGastosAdmin() {
+        return gastoAdminRepository.findAll();
+    }
+
+
+    public List<GastoAdmin> getGastosAdmin(LocalDate startDate, LocalDate endDate) {
+        return gastoAdminRepository.findByFechaBetween(startDate, endDate);
+    }
+
+
+    public GastoAdmin updateGastoAdmin(Long id, GastoAdmin updatedGastoAdmin) {
+        GastoAdmin existingGastoAdmin = gastoAdminRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                    "GastoAdmin no encontrado con id " + id));
+        
+        // Actualizar campos básicos
+        if (updatedGastoAdmin.getMonto() != null) {
+            existingGastoAdmin.setMonto(updatedGastoAdmin.getMonto());
+        }
+        
+        if (updatedGastoAdmin.getDescripcion() != null) {
+            existingGastoAdmin.setDescripcion(updatedGastoAdmin.getDescripcion());
+        }
+        
+        if (updatedGastoAdmin.getFecha() != null) {
+            existingGastoAdmin.setFecha(updatedGastoAdmin.getFecha());
+        }
+        
+        if (updatedGastoAdmin.getUsername() != null) {
+            existingGastoAdmin.setUsername(updatedGastoAdmin.getUsername());
+        }
+        
+        GastoAdmin saved = gastoAdminRepository.save(existingGastoAdmin);
+        System.out.println("GastoAdmin actualizado con id: " + saved.getId());
+        return saved;
+    }
+
+    public void deleteGastoAdmin(Long id) {
+        if (!gastoAdminRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                "GastoAdmin no encontrado con id " + id);
+        }
+        gastoAdminRepository.deleteById(id);
+    }
+
+    private boolean isValidPercentages(Integer porcentajeDanli, Integer porcentajeParaiso) {
+        if (porcentajeDanli == null || porcentajeParaiso == null) {
+            return false;
+        }
+        return (porcentajeDanli + porcentajeParaiso) == 100;
+    }
+    
+    private BigDecimal calcularMonto(BigDecimal montoTotal, Integer porcentaje) {
+        return montoTotal.multiply(BigDecimal.valueOf(porcentaje))
+                        .divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP);
     }
 }

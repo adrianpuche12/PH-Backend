@@ -15,7 +15,7 @@ public class SupplierPaymentService {
     private SupplierPaymentRepository supplierPaymentRepository;
 
     public List<SupplierPayment> findAll() {
-        return supplierPaymentRepository.findAll();
+        return supplierPaymentRepository.findAllOrderByPaymentDateDesc();
     }
 
     public Optional<SupplierPayment> findById(Long id) {
@@ -30,8 +30,7 @@ public class SupplierPaymentService {
         supplierPaymentRepository.deleteById(id);
     }
 
-    // ✅ Filtro por store
     public List<SupplierPayment> findByStoreId(Long storeId) {
-        return supplierPaymentRepository.findByStoreId(storeId);
+        return supplierPaymentRepository.findByStoreIdOrderByPaymentDateDesc(storeId);
     }
 }

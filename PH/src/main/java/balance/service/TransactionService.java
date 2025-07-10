@@ -1,13 +1,11 @@
 package balance.service;
-
-import balance.model.Transaction;
 import balance.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import balance.model.Transaction;
 
 @Service
 public class TransactionService {
@@ -16,7 +14,7 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     public List<Transaction> findAll() {
-        return transactionRepository.findAll();
+        return transactionRepository.findAllOrderByDateDesc();
     }
 
     public Optional<Transaction> findById(Long id) {
@@ -36,6 +34,6 @@ public class TransactionService {
     }
 
     public List<Transaction> findByDateBetweenAndStoreId(LocalDate startDate, LocalDate endDate, Long storeId) {
-        return transactionRepository.findByDateBetweenAndStoreId(startDate, endDate, storeId);
+        return transactionRepository.findByDateBetweenAndStoreIdOrderByDateDesc(startDate, endDate, storeId);
     }
 }

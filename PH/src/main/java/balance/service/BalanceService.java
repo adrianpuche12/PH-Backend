@@ -23,7 +23,7 @@ public class BalanceService {
 
     // Método para obtener todas las transacciones
     public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+        return transactionRepository.findAllOrderByDateDesc();
     }
 
     // Método para calcular el balance entre dos fechas
@@ -32,7 +32,7 @@ public class BalanceService {
         LocalDate adjustedEndDate = endDate.plusDays(1);
 
         // Obtener las transacciones dentro del rango de fechas
-        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, adjustedEndDate);
+        List<Transaction> transactions = transactionRepository.findByDateBetweenOrderByDateDesc(startDate, adjustedEndDate);
 
         // Si no hay transacciones, retornar cero
         if (transactions == null || transactions.isEmpty()) {

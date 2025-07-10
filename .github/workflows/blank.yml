@@ -1,14 +1,14 @@
-name: Desplegar Backend a Docker Hub y Servidor
+name: Desplegar Backend a Docker Hub y Servidor (Desarrollo)
 
 on:
   push:
     branches:
-      - master  # Solo se ejecuta en push a master
+      - dev  # Solo se ejecuta en push a dev
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
 
     steps:
       - name: Checkout del repositorio
@@ -23,13 +23,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Definir nombre de la imagen y versión
+      - name: Definir nombre de la imagen y versión (Dev)
         run: |
-          IMAGE_NAME="baumanpeter/humberto:humbertobackend"
+          IMAGE_NAME="baumanpeter/humberto:humbertobackend-dev"
           VERSION="v${{ github.run_number }}"
           IMAGE_VERSION="$IMAGE_NAME-$VERSION"
           echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
-          echo "✅ Imagen con versión: $IMAGE_VERSION"
+          echo "✅ Imagen de desarrollo con versión: $IMAGE_VERSION"
 
       - name: Verificar contenido del directorio
         run: ls -l ./PH
@@ -47,9 +47,9 @@ jobs:
 
       - name: Build Docker image and load locally
         run: |
-          echo "🚀 Construyendo la imagen Docker..."
+          echo "🚀 Construyendo la imagen Docker de desarrollo..."
           docker buildx build --platform linux/amd64 --no-cache --load -t $IMAGE_VERSION ./PH
-          echo "✅ Imagen construida y cargada localmente."
+          echo "✅ Imagen de desarrollo construida y cargada localmente."
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -57,24 +57,24 @@ jobs:
           docker push $IMAGE_VERSION
           echo "✅ Imagen subida exitosamente."
 
-      - name: Desplegar al servidor remoto (actualizando docker-compose)
+      - name: Desplegar al servidor remoto (actualizando docker-compose de desarrollo)
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.DEV_SSH_HOST || secrets.SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USER || secrets.SSH_USER }}
+          key: ${{ secrets.DEV_SSH_KEY || secrets.SSH_KEY }}
           envs: IMAGE_VERSION
           script: |
-            echo "📥 Iniciando despliegue remoto del backend..."
+            echo "📥 Iniciando despliegue remoto del backend (dev)..."
             docker pull $IMAGE_VERSION
 
-            cd /root/Proyecto_H/DockerComposeHumberto
+            cd /root/Proyecto_H/DockerComposeHumberto-dev
 
             echo "🔄 Actualizando imagen en docker-compose.yml..."
-            sed -i "s|baumanpeter/humberto:humbertobackend-v[0-9]*|$IMAGE_VERSION|g" docker-compose.yml
+            sed -i "s|baumanpeter/humberto:humbertobackend-dev-v[0-9]*|$IMAGE_VERSION|g" docker-compose.yml
 
             echo "🛠 Ejecutando script de actualización..."
             cd /root/Proyecto_H
             ./update_all_services.sh
 
-            echo "🚀 Despliegue de producción completado en el servidor."
+            echo "🚀 Despliegue de desarrollo completado en el servidor."

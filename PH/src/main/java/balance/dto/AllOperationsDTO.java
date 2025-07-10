@@ -5,6 +5,12 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+
+// ================================================================
+// AGREGAR ESTE IMPORT AL INICIO DEL ARCHIVO
+// ================================================================
+import balance.model.GastoAdmin;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AllOperationsDTO {
     private Long id;
@@ -207,5 +213,32 @@ public class AllOperationsDTO {
 
     public void setSalaryDate(LocalDate salaryDate) {
         this.salaryDate = salaryDate;
+    }
+
+
+    // ================================================================
+// AGREGAR ESTE MÉTODO CONSTRUCTOR ESTÁTICO A LA CLASE AllOperationsDTO
+// ================================================================
+
+    public static AllOperationsDTO fromGastoAdmin(balance.model.GastoAdmin gastoAdmin) {
+        AllOperationsDTO dto = new AllOperationsDTO();
+        dto.setId(gastoAdmin.getId());
+        dto.setType("GASTO_ADMIN");
+        dto.setAmount(gastoAdmin.getMonto());
+        dto.setDate(gastoAdmin.getFecha());
+        dto.setUsername(gastoAdmin.getUsername());
+        
+        
+        // No tiene store específico porque se divide entre locales
+        dto.setStoreId(null);
+        dto.setStoreName("Administrativo (Dividido)");
+        
+        // Descripción con información de división
+        dto.setDescription(String.format("%s (Danli: %d%%, El Paraíso: %d%%)", 
+            gastoAdmin.getDescripcion(),
+            gastoAdmin.getPorcentajeDanli(),
+            gastoAdmin.getPorcentajeParaiso()));
+        
+        return dto;
     }
 }
