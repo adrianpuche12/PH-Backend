@@ -11,6 +11,7 @@ public class GastoAdminResponseDTO {
     private BigDecimal montoTotal;
     private List<TransaccionCreada> transacciones;
     private Long gastoAdminId;
+    private String imageUri;
     
     // Constructores
     public GastoAdminResponseDTO() {}
@@ -158,6 +159,13 @@ public class GastoAdminResponseDTO {
     
     public void setGastoAdminId(Long gastoAdminId) {
         this.gastoAdminId = gastoAdminId;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
     
     @Override

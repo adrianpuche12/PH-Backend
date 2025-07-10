@@ -31,6 +31,7 @@ public class GastoAdminRequestDTO {
     @Max(value = 100, message = "El porcentaje de El Paraíso debe ser menor o igual a 100")
     private Integer porcentajeParaiso;
     
+    private String imageUri;
     // Constructores
     public GastoAdminRequestDTO() {}
     
@@ -99,6 +100,13 @@ public class GastoAdminRequestDTO {
     
     public void setPorcentajeParaiso(Integer porcentajeParaiso) {
         this.porcentajeParaiso = porcentajeParaiso;
+    }
+    
+    public String getImageUri() {
+        return imageUri;
+    }
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
     
     @Override

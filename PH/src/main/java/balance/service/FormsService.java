@@ -340,6 +340,7 @@ public class FormsService {
         gastoAdmin.setPorcentajeDanli(request.getPorcentajeDanli());
         gastoAdmin.setPorcentajeParaiso(request.getPorcentajeParaiso());
         gastoAdmin.setUsername("admin_user"); // O username del contexto
+        gastoAdmin.setImageUri(request.getImageUri());
         
         GastoAdmin gastoAdminSaved = gastoAdminRepository.save(gastoAdmin);
 
@@ -364,6 +365,7 @@ public class FormsService {
             transactionDanli.setDescription(String.format("%s (Danli %d%%)", 
                 request.getDescripcion(), request.getPorcentajeDanli()));
             transactionDanli.setStore(storeDanli);
+            transactionDanli.setImageUri(request.getImageUri());
             
             Transaction savedDanli = transactionRepository.save(transactionDanli);
             transaccionesCount++;
@@ -390,6 +392,7 @@ public class FormsService {
             transactionParaiso.setDescription(String.format("%s (El Paraíso %d%%)", 
                 request.getDescripcion(), request.getPorcentajeParaiso()));
             transactionParaiso.setStore(storeParaiso);
+            transactionParaiso.setImageUri(request.getImageUri());
             
             Transaction savedParaiso = transactionRepository.save(transactionParaiso);
             transaccionesCount++;

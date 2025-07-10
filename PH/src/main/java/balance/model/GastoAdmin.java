@@ -59,6 +59,9 @@ public class GastoAdmin {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "image_uri", length = 500)
+    private String imageUri;
+
     // Constructores
     public GastoAdmin() {
         this.createdAt = LocalDateTime.now();
@@ -196,6 +199,14 @@ public class GastoAdmin {
     
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getImageUri() { 
+        return imageUri; 
+    }
+
+    public void setImageUri(String imageUri) { 
+        this.imageUri = imageUri; 
     }
     
     @Override
