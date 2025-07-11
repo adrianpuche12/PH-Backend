@@ -15,8 +15,8 @@ public class Transaction {
 
     @Column(nullable = false)
     @NotBlank(message = "El campo 'type' no puede estar vacío")
-    @Pattern(regexp = "income|expense", message = "El campo 'type' debe ser 'income' o 'expense'")
-    private String type; // "income" o "expense"
+    @Pattern(regexp = "income|expense|gasto_admin", message = "El campo 'type' debe ser 'income', 'expense' o 'gasto_admin'")
+    private String type;
 
     @Column(nullable = false)
     @NotNull(message = "El campo 'amount' no puede ser nulo")

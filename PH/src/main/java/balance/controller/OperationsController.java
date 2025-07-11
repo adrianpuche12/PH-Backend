@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 // ================================================================
 // AGREGAR ESTE IMPORT AL INICIO DEL ARCHIVO
@@ -61,6 +63,34 @@ public class OperationsController {
         
         // Sin filtros, retornar todas las operaciones
         return ResponseEntity.ok(formsService.getAllOperations());
+    }
+
+    /**
+     * Obtiene solo los gastos administrativos divididos.
+     * Devuelve las transacciones divididas (Danli y El Paraíso) en lugar del registro de auditoría completo.
+     * Admite filtros por fecha y local.
+     *
+     * Ejemplo en Postman:
+     * GET http://localhost:8080/api/operations/admin-expenses
+     * GET http://localhost:8080/api/operations/admin-expenses?startDate=2024-01-01&endDate=2024-01-31
+     * GET http://localhost:8080/api/operations/admin-expenses?storeId=1
+     * GET http://localhost:8080/api/operations/admin-expenses?startDate=2024-01-01&endDate=2024-01-31&storeId=1
+     */
+    @GetMapping("/admin-expenses")
+    public ResponseEntity<List<AllOperationsDTO>> getAdminExpenses(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Long storeId) {
+
+        List<AllOperationsDTO> adminExpenses = formsService.getAdminExpenseTransactions(startDate, endDate, storeId);
+
+        adminExpenses.sort((o1, o2) -> {
+            if (o1.getDate() == null) return 1;
+            if (o2.getDate() == null) return -1;
+            return o2.getDate().compareTo(o1.getDate());
+        });
+
+        return ResponseEntity.ok(adminExpenses);
     }
 
     /**

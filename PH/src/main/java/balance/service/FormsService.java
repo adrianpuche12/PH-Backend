@@ -359,7 +359,7 @@ public class FormsService {
             BigDecimal montoDanli = calcularMonto(request.getMonto(), request.getPorcentajeDanli());
             
             Transaction transactionDanli = new Transaction();
-            transactionDanli.setType(request.getTipo());
+            transactionDanli.setType("gasto_admin");
             transactionDanli.setAmount(montoDanli);
             transactionDanli.setDate(request.getFecha());
             transactionDanli.setDescription(String.format("%s (Danli %d%%)", 
@@ -386,7 +386,7 @@ public class FormsService {
             BigDecimal montoParaiso = calcularMonto(request.getMonto(), request.getPorcentajeParaiso());
             
             Transaction transactionParaiso = new Transaction();
-            transactionParaiso.setType(request.getTipo());
+            transactionParaiso.setType("gasto_admin");
             transactionParaiso.setAmount(montoParaiso);
             transactionParaiso.setDate(request.getFecha());
             transactionParaiso.setDescription(String.format("%s (El Paraíso %d%%)", 
@@ -425,6 +425,61 @@ public class FormsService {
 
     public List<GastoAdmin> getGastosAdmin(LocalDate startDate, LocalDate endDate) {
         return gastoAdminRepository.findByFechaBetween(startDate, endDate);
+    }
+
+    // Método para obtener las transacciones divididas de gastos administrativos
+    public List<AllOperationsDTO> getAdminExpenseTransactions(LocalDate startDate, LocalDate endDate, Long storeId) {
+        List<AllOperationsDTO> adminTransactions = new ArrayList<>();
+
+        if (startDate != null && endDate != null) {
+            if (storeId != null) {
+                // Filtrar por fecha, tipo y store
+                transactionRepository.findByDateBetweenAndTypeAndStoreIdOrderByDateDesc(startDate, endDate, "gasto_admin", storeId)
+                        .stream()
+                        .map(this::transactionToAllOperationsDTO)
+                        .forEach(adminTransactions::add);
+            } else {
+                // Filtrar solo por fecha y tipo
+                transactionRepository.findByDateBetweenAndTypeOrderByDateDesc(startDate, endDate, "gasto_admin")
+                        .stream()
+                        .map(this::transactionToAllOperationsDTO)
+                        .forEach(adminTransactions::add);
+            }
+        } else {
+            if (storeId != null) {
+                // Filtrar solo por tipo y store
+                transactionRepository.findByTypeAndStoreIdOrderByDateDesc("gasto_admin", storeId)
+                        .stream()
+                        .map(this::transactionToAllOperationsDTO)
+                        .forEach(adminTransactions::add);
+            } else {
+                // Buscar todas las transacciones de tipo "gasto_admin"
+                transactionRepository.findByTypeOrderByDateDesc("gasto_admin")
+                        .stream()
+                        .map(this::transactionToAllOperationsDTO)
+                        .forEach(adminTransactions::add);
+            }
+        }
+
+        return adminTransactions;
+    }
+
+    // Método auxiliar para convertir Transaction a AllOperationsDTO
+    private AllOperationsDTO transactionToAllOperationsDTO(Transaction transaction) {
+        AllOperationsDTO dto = new AllOperationsDTO();
+        dto.setId(transaction.getId());
+        dto.setType("gasto_admin");
+        dto.setAmount(transaction.getAmount());
+        dto.setDate(transaction.getDate());
+        dto.setDescription(transaction.getDescription());
+        dto.setImageUri(transaction.getImageUri());
+        
+        if (transaction.getStore() != null) {
+            dto.setStoreId(transaction.getStore().getId());
+            dto.setStoreName(transaction.getStore().getName());
+        }
+        
+        return dto;
     }
 
 

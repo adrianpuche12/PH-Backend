@@ -238,8 +238,7 @@ public class AllOperationsDTO {
         dto.setAmount(gastoAdmin.getMonto());
         dto.setDate(gastoAdmin.getFecha());
         dto.setUsername(gastoAdmin.getUsername());
-        
-        
+        dto.setImageUri(gastoAdmin.getImageUri());
         
         // No tiene store específico porque se divide entre locales
         dto.setStoreId(null);
