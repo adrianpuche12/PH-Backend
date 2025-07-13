@@ -29,6 +29,7 @@ import balance.repository.GastoAdminRepository;
 import balance.repository.TransactionRepository;
 import balance.repository.StoreRepository;
 
+
 @Service
 @Transactional
 public class FormsService {
